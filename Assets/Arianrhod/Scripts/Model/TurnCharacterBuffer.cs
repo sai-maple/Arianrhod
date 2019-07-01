@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Arianrhod.Model;
 
-namespace Arianrhod.UseCase
+namespace Arianrhod.Model
 {
     public interface INextCharacter
     {
@@ -26,7 +25,7 @@ namespace Arianrhod.UseCase
         public void UpdateCharacters(IEnumerator<Character> characters)
         {
             _turnCharacters.Clear();
-            foreach (var character in _turnCharacters.OrderBy(character => character.Dexterity))
+            foreach (var character in _turnCharacters.OrderBy(character => character.CharacterEntity().Dexterity))
             {
                 _turnCharacters.Enqueue(character);
             }
