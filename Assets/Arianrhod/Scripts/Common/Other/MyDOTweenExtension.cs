@@ -1,13 +1,13 @@
 using DG.Tweening;
 
-namespace HULCUS
+namespace Arianrhod
 {
     public static class MyDOTweenExtension
     {
         // TweenのAwaiter
         public struct TweenAwaiter : System.Runtime.CompilerServices.ICriticalNotifyCompletion
         {
-            private Tween _tween;
+            private readonly Tween _tween;
 
             public TweenAwaiter(Tween tween) => this._tween = tween;
 
