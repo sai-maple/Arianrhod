@@ -12,15 +12,15 @@ namespace Arianrhod.Model
         }
         
         private PanelEntity _entity = default;
-        private Character _character = default;
+        private int _characterId = -1;
 
         private readonly ReactiveProperty<bool> _isTarget = default;
 
         public IObservable<bool> IsTargeted() => _isTarget;
 
-        public Character GetCharacter()
+        public int GetCharacterId()
         {
-            return _entity.PanelState == PanelState.Character ? _character : null;
+            return _entity.PanelState == PanelState.Character ? _characterId : -1;
         }
 
         public void Invaded(Character character)
@@ -30,14 +30,14 @@ namespace Arianrhod.Model
                 character.AddDice(_entity.DiceType);
             }
 
-            _character = character;
-            _character.SetPosition(_entity);
+            _characterId = character.Id;
+            character.SetPosition(_entity);
             _entity.PanelState = PanelState.Character;
         }
 
         public void Escaped()
         {
-            _character = null;
+            _characterId = -1;
             _entity.PanelState = PanelState.Empty;
         }
 

@@ -25,7 +25,7 @@ namespace Arianrhod.Model
         public void UpdateCharacters(IEnumerator<Character> characters)
         {
             _turnCharacters.Clear();
-            foreach (var character in _turnCharacters.OrderBy(character => character.CharacterEntity().Dexterity))
+            foreach (var character in _turnCharacters.OrderBy(character => character.CharacterEntity.Dexterity))
             {
                 _turnCharacters.Enqueue(character);
             }

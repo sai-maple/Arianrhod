@@ -1,16 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using Arianrhod.Entity;
+using Arianrhod.Model;
 using Unity.Mathematics;
 
-namespace Arianrhod.Model
+namespace Arianrhod.UseCase
 {
-    public class StageModel
+    public class StageUseCase
     {
+
+        private CharacterResidue _characterResidue = default;
+        private EnemyResidue _enemyResidue = default;
         private List<List<int>> _stageHash = new List<List<int>>();
         private Dictionary<int, PanelModel> _stage = new Dictionary<int, PanelModel>();
-
-        public StageModel()
+        
+        public StageUseCase()
         {
 
         }
@@ -37,11 +41,11 @@ namespace Arianrhod.Model
             return target.Invasive();
         }
 
-        public IEnumerable<Character> Target(int x, int y, Direction direction, SkillEntity skillEntity)
+        public IEnumerable<Character> Target(Character attacker, int skillIndex)
         {
             var list = new List<Character>();
-            var range = skillEntity.Range;
-            for (var i = 0; i < (int) direction; i++)
+            var range = attacker.Skill(skillIndex).Range;
+            for (var i = 0; i < (int) attacker.OnDirectionChanged().Value; i++)
             {
                 range = RotateClockwise.Rotate(range);
             }
@@ -51,6 +55,7 @@ namespace Arianrhod.Model
                 panel.Target(false);
             }
 
+            var (x, y) = attacker.Position;
             for (var column = math.max(0, x - (range.Length - 1) / 2);
                 column < math.max(_stageHash.Count, x + (range.Length - 1) / 2);
                 column++)
@@ -62,7 +67,9 @@ namespace Arianrhod.Model
                     if (range[column, line] != 1) continue;
                     var panel = _stage[_stageHash[column][line]];
                     panel.Target(true);
-                    var character = panel.GetCharacter();
+                    var character = attacker.Owner == Owner.CPU
+                        ? _characterResidue.GetCharacter(panel.GetCharacterId())
+                        : _enemyResidue.GetCharacter(panel.GetCharacterId());
                     if (character == null) continue;
                     list.Add(character);
                 }

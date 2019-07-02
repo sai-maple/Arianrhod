@@ -16,6 +16,16 @@ namespace Arianrhod.Model
                 .Where(hp => hp <= 0)
                 .Subscribe(_ => RemoveCharacter());
         }
+        
+        public void AddCharacter(Character character)
+        {
+            _characters.Add(character);
+        }
+
+        public Character GetCharacter(int id)
+        {
+            return _characters.FirstOrDefault(character => character.Id == id);
+        }
 
         private void RemoveCharacter()
         {
@@ -30,6 +40,7 @@ namespace Arianrhod.Model
             if (_characters.Count == 0)
             {
                 // game over
+                _characters.Clear();
             }
         }
     }

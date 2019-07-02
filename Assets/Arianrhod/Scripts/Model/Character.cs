@@ -16,8 +16,7 @@ namespace Arianrhod.Model
             _d8 = new ReactiveProperty<int>(0);
             _direction = new ReactiveProperty<Direction>();
         }
-        
-        private readonly CharacterEntity _characterEntity = default;
+
         private readonly List<SkillEntity> _skillEntity = default;
         private readonly ReactiveProperty<int> _hp = default;
         private readonly ReactiveProperty<int> _d3 = default;
@@ -26,17 +25,21 @@ namespace Arianrhod.Model
         private readonly ReactiveProperty<Direction> _direction = default;
         private PanelEntity _position = default;
         private Transform _transform = default;
-        private Owner _owner = default;
 
-        public IReadOnlyReactiveProperty<int> OnHpChanged() => _hp;
+        public int Id { get; }
         public int MaxHp { get; }
+        public IReadOnlyReactiveProperty<int> OnHpChanged() => _hp;
         public IReadOnlyReactiveProperty<int> OnD3Changed() => _d3;
         public IReadOnlyReactiveProperty<int> OnD6Changed() => _d6;
         public IReadOnlyReactiveProperty<int> OnD8Changed() => _d8;
         public IReadOnlyReactiveProperty<Direction> OnDirectionChanged() => _direction;
         
-        public CharacterEntity CharacterEntity() => _characterEntity;
-        public IEnumerable<SkillEntity> Skill() => _skillEntity;
+        public CharacterEntity CharacterEntity { get; } = default;
+        public Owner Owner { get; } = default;
+
+        public SkillEntity Skill(int index) => _skillEntity[index];
+        public (int, int) Position => (_position.X, _position.Y);
+
 
         public void SetDirection(Direction direction)
         {
