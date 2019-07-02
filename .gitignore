@@ -5,6 +5,7 @@
 [Bb]uilds/
 Assets/AssetStoreTools*
 Assets/FantasyCharacter*
+Assets/Dice*
 
 # Visual Studio cache directory
 .vs/
