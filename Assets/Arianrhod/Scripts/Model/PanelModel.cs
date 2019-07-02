@@ -11,7 +11,7 @@ namespace Arianrhod.Model
             _isTarget = new ReactiveProperty<bool>(false);
         }
         
-        private PanelEntity _entity = default;
+        private readonly PanelEntity _entity = default;
         private int _characterId = -1;
 
         private readonly ReactiveProperty<bool> _isTarget = default;
@@ -32,13 +32,13 @@ namespace Arianrhod.Model
 
             _characterId = character.Id;
             character.SetPosition(_entity);
-            _entity.PanelState = PanelState.Character;
+            _entity.SetPanelState(PanelState.Character);
         }
 
         public void Escaped()
         {
             _characterId = -1;
-            _entity.PanelState = PanelState.Empty;
+            _entity.SetPanelState(PanelState.Empty);
         }
 
         public bool Invasive()

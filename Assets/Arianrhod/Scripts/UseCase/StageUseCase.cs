@@ -8,9 +8,8 @@ namespace Arianrhod.UseCase
 {
     public class StageUseCase
     {
-
-        private CharacterResidue _characterResidue = default;
-        private EnemyResidue _enemyResidue = default;
+        private readonly CharacterResidue _characterResidue = default;
+        private readonly EnemyResidue _enemyResidue = default;
         private List<List<int>> _stageHash = new List<List<int>>();
         private Dictionary<int, PanelModel> _stage = new Dictionary<int, PanelModel>();
         
@@ -26,19 +25,19 @@ namespace Arianrhod.UseCase
             return _stage.Values;
         }
 
-        private static void Invaded(Character character, PanelModel target)
+        private void Invaded(Character character, PanelEntity target)
         {
-            target.Invaded(character);
+            _stage[_stageHash[target.X][target.Y]].Invaded(character);
         }
 
-        private static void Escaped(PanelModel target)
+        private void Escaped(PanelEntity target)
         {
-            target.Escaped();
+            _stage[_stageHash[target.X][target.Y]].Escaped();
         }
 
-        public bool Invasive(PanelModel target)
+        public bool Invasive(PanelEntity target)
         {
-            return target.Invasive();
+            return _stage[_stageHash[target.X][target.Y]].Invasive();
         }
 
         public IEnumerable<Character> Target(Character attacker, int skillIndex)
@@ -77,7 +76,7 @@ namespace Arianrhod.UseCase
             return list;
         }
 
-        public void MoveCharacter(Character character, IEnumerable<PanelModel> movePath)
+        public void MoveCharacter(Character character, IEnumerable<PanelEntity> movePath)
         {
             var panelEntities = movePath.ToList();
             foreach (var panel in panelEntities)
