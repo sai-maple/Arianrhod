@@ -5,6 +5,7 @@ using DG.Tweening;
 using UniRx;
 using Unity.Mathematics;
 using UnityEngine;
+using Zenject;
 
 namespace Arianrhod.View.Game
 {

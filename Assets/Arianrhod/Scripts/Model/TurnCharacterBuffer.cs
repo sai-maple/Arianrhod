@@ -10,7 +10,12 @@ namespace Arianrhod.Model
         void UpdateCharacters(IEnumerator<Character> characters);
     }
 
-    public class TurnCharacterBuffer : INextTurn, ICharacterBufferInitializer , IDisposable
+    public interface ITurnCharacterProvider
+    {
+        IReadOnlyReactiveProperty<Character> OnTurnCharacterChanged();
+    }
+
+    public class TurnCharacterBuffer : INextTurn, ICharacterBufferInitializer, ITurnCharacterProvider, IDisposable
     {
         private readonly Queue<Character> _turnCharacters = default;
 

@@ -48,12 +48,40 @@ namespace Arianrhod.Model
         
         public void AddDice(DiceType diceType)
         {
-            
+            switch (diceType)
+            {
+                case DiceType.D3:
+                    _d3.Value++;
+                    break;
+                case DiceType.D6:
+                    _d6.Value++;
+                    break;
+                case DiceType.D8:
+                    _d8.Value++;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public void SetPosition(PanelEntity panelEntity)
         {
             _position = panelEntity;
+        }
+
+        public int DiceNumCount(SkillEntity skillEntity)
+        {
+            switch (skillEntity.DiceType)
+            {
+                case DiceType.D3:
+                    return _d3.Value;
+                case DiceType.D6:
+                    return _d6.Value;
+                case DiceType.D8:
+                    return _d8.Value;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public void Dispose()
