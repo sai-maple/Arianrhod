@@ -24,16 +24,16 @@ namespace Arianrhod.View.Game
 		{
 			switch (str)
 			{
-				case AnimationName1.Ultimate:
+				case AnimationName.Ultimate:
 					return UltimateEffect;
 					break;
-				case AnimationName1.Magic:
+				case AnimationName.Magic:
 					return MagicEffect;
 					break;
-				case AnimationName1.Attack:
+				case AnimationName.Attack:
 					return AttackEffect;
 					break;
-				case AnimationName1.Magic2:
+				case AnimationName.Magic2:
 					return Magic2Effect;
 					break;
 			}

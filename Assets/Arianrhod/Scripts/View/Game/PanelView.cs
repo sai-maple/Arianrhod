@@ -7,8 +7,16 @@ using Zenject;
 
 namespace Arianrhod.View.Game
 {
+    public interface IPanelView
+    {
+        IObservable<PanelEntity> OnPointerEnter();
+        IObservable<PanelEntity> OnPointerDown();
+        IObservable<PanelEntity> OnPointerUp();
+        void OnSelect(bool isSelect);
+    }
+    
     public class PanelView : MonoBehaviour, IPoolable<PanelEntity, IMemoryPool>,
-        IDisposable
+        IDisposable , IPanelView
     {
         private IMemoryPool _pool = default;
         private PanelEntity _panelEntity = default;
@@ -20,8 +28,12 @@ namespace Arianrhod.View.Game
             _trigger.OnPointerEnterAsObservable()
                 .Select(_ => _panelEntity);
         
-        public IObservable<PanelEntity> OnClick() =>
+        public IObservable<PanelEntity> OnPointerDown() =>
             _trigger.OnPointerDownAsObservable()
+                .Select(_ => _panelEntity);
+        
+        public IObservable<PanelEntity> OnPointerUp() =>
+            _trigger.OnPointerUpAsObservable()
                 .Select(_ => _panelEntity);
 
         public void OnSelect(bool isSelect)

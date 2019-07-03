@@ -5,7 +5,7 @@ namespace Arianrhod.Model
 {
     public interface IPhaseProvider
     {
-        IObservable<Phase> OnPhaseChanged();
+        IReadOnlyReactiveProperty<Phase> OnPhaseChanged();
     }
 
     public interface IPhaseRegister
@@ -18,7 +18,7 @@ namespace Arianrhod.Model
     public class PhaseModel : IPhaseProvider, IPhaseRegister, IDisposable
     {
         private readonly ReactiveProperty<Phase> _phase = default;
-        public IObservable<Phase> OnPhaseChanged() => _phase;
+        public IReadOnlyReactiveProperty<Phase> OnPhaseChanged() => _phase;
 
         public void NextTurn()
         {

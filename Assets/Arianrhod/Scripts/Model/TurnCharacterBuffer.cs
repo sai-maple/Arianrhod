@@ -1,25 +1,26 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 
 namespace Arianrhod.Model
 {
-    public interface INextCharacter
-    {
-        Character OnNext();
-    }
-
     public interface ICharacterBufferInitializer
     {
         void UpdateCharacters(IEnumerator<Character> characters);
     }
 
-    public class TurnCharacterBuffer : INextCharacter, ICharacterBufferInitializer
+    public class TurnCharacterBuffer : INextTurn, ICharacterBufferInitializer , IDisposable
     {
         private readonly Queue<Character> _turnCharacters = default;
+
+        private readonly ReactiveProperty<Character> _turnCharacter = default;
+        public IReadOnlyReactiveProperty<Character> OnTurnCharacterChanged() => _turnCharacter;
 
         public TurnCharacterBuffer()
         {
             _turnCharacters = new Queue<Character>();
+            _turnCharacter = new ReactiveProperty<Character>();
         }
 
         public void UpdateCharacters(IEnumerator<Character> characters)
@@ -31,11 +32,16 @@ namespace Arianrhod.Model
             }
         }
 
-        public Character OnNext()
+        public void OnNext()
         {
             var character = _turnCharacters.Dequeue();
             _turnCharacters.Enqueue(character);
-            return character;
+            _turnCharacter.Value = character;
+        }
+
+        public void Dispose()
+        {
+            _turnCharacter.Dispose();
         }
     }
 }

@@ -2,16 +2,24 @@ using System.Collections.Generic;
 using System.Linq;
 using Arianrhod.Entity;
 using Arianrhod.Model;
+using JetBrains.Annotations;
 using Unity.Mathematics;
 
 namespace Arianrhod.UseCase
 {
-    public class StageUseCase
+
+    public interface IPanelSelector
+    {
+        bool Invasive(PanelEntity target);
+        Character GetCharacter(PanelEntity target);
+    }
+    
+    public class StageUseCase : IPanelSelector
     {
         private readonly CharacterResidue _characterResidue = default;
         private readonly EnemyResidue _enemyResidue = default;
-        private List<List<int>> _stageHash = new List<List<int>>();
-        private Dictionary<int, PanelModel> _stage = new Dictionary<int, PanelModel>();
+        private readonly List<List<int>> _stageHash = new List<List<int>>();
+        private readonly Dictionary<int, PanelModel> _stage = new Dictionary<int, PanelModel>();
         
         public StageUseCase()
         {
@@ -34,10 +42,24 @@ namespace Arianrhod.UseCase
         {
             _stage[_stageHash[target.X][target.Y]].Escaped();
         }
-
+        
+        // 移動可能判定
         public bool Invasive(PanelEntity target)
         {
             return _stage[_stageHash[target.X][target.Y]].Invasive();
+        }
+
+        // 選択パネルのキャラ獲得　or null
+        [CanBeNull]
+        public Character GetCharacter(PanelEntity target)
+        {
+            var panel = _stage[_stageHash[target.X][target.Y]];
+            if (panel.GetCharacterId() == -1)
+            {
+                return null;
+            }
+            var character = _characterResidue.GetCharacter(panel.GetCharacterId());
+            return character ?? _enemyResidue.GetCharacter(panel.GetCharacterId());
         }
 
         public IEnumerable<Character> Target(Character attacker, int skillIndex)
