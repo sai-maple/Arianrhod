@@ -11,5 +11,6 @@ namespace Arianrhod.Entity
         public int Name { get; }
         public DiceType DiceType { get; }
         public int[,] Range { get; }
+        public AnimationState AnimationState { get; }
     }
 }

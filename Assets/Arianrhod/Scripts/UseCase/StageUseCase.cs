@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Arianrhod.Entity;
 using Arianrhod.Model;
 using JetBrains.Annotations;
-using Unity.Mathematics;
+using UniRx;
+using Zenject;
 
 namespace Arianrhod.UseCase
 {
@@ -14,46 +16,50 @@ namespace Arianrhod.UseCase
         Character GetCharacter(PanelEntity target);
     }
     
-    public class StageUseCase : IPanelSelector
+    public class StageUseCase : IPanelSelector, IInitializable , IDisposable
     {
         private readonly CharacterResidue _characterResidue = default;
         private readonly EnemyResidue _enemyResidue = default;
-        private readonly List<List<int>> _stageHash = new List<List<int>>();
-        private readonly Dictionary<int, PanelModel> _stage = new Dictionary<int, PanelModel>();
+        private readonly IStageModel _stageModel = default;
+        private readonly IPhaseProvider _phaseProvider = default;
+        private readonly ITargetRegister _targetRegister = default;
+        
+        private readonly CompositeDisposable _disposable = new CompositeDisposable();
         
         public StageUseCase()
         {
 
         }
 
-        public IEnumerable<PanelModel> MakeStage()
+        public void Initialize()
         {
-            _stageHash.Clear();
-            _stage.Clear();
-            return _stage.Values;
+            _phaseProvider.OnPhaseChanged()
+                .Where(phase => phase == Phase.Damage)
+                .Subscribe(_ => _stageModel.TargetReset())
+                .AddTo(_disposable);
         }
 
         private void Invaded(Character character, PanelEntity target)
         {
-            _stage[_stageHash[target.X][target.Y]].Invaded(character);
+            _stageModel.Invaded(character,target);
         }
 
         private void Escaped(PanelEntity target)
         {
-            _stage[_stageHash[target.X][target.Y]].Escaped();
+            _stageModel.Escaped(target);
         }
         
         // 移動可能判定
         public bool Invasive(PanelEntity target)
         {
-            return _stage[_stageHash[target.X][target.Y]].Invasive();
+            return _stageModel.Invasive(target);
         }
 
         // 選択パネルのキャラ獲得　or null
         [CanBeNull]
         public Character GetCharacter(PanelEntity target)
         {
-            var panel = _stage[_stageHash[target.X][target.Y]];
+            var panel = _stageModel.GetPanel(target);
             if (panel.GetCharacterId() == -1)
             {
                 return null;
@@ -62,45 +68,28 @@ namespace Arianrhod.UseCase
             return character ?? _enemyResidue.GetCharacter(panel.GetCharacterId());
         }
 
-        public IEnumerable<Character> Target(Character attacker, int skillIndex)
+        // 攻撃範囲の敵キャラクター取得
+        public void Target(Character attacker, int skillIndex)
         {
-            var list = new List<Character>();
-            var range = attacker.Skill(skillIndex).Range;
-            for (var i = 0; i < (int) attacker.OnDirectionChanged().Value; i++)
-            {
-                range = RotateClockwise.Rotate(range);
-            }
+            _stageModel.TargetReset();
 
-            foreach (var panel in _stage.Values)
-            {
-                panel.Target(false);
-            }
+            var targets = _stageModel.TargetCharacterIds(attacker, skillIndex)
+                .Select(id => attacker.Owner == Owner.CPU
+                    ? _characterResidue.GetCharacter(id)
+                    : _enemyResidue.GetCharacter(id))
+                .Where(character => character != null)
+                .ToList();
 
-            var (x, y) = attacker.Position;
-            for (var column = math.max(0, x - (range.Length - 1) / 2);
-                column < math.max(_stageHash.Count, x + (range.Length - 1) / 2);
-                column++)
-            {
-                for (var line = math.max(0, y - (range.GetLength(0) - 1) / 2);
-                    line < math.max(_stageHash.Count, y + (range.GetLength(0) - 1) / 2);
-                    line++)
-                {
-                    if (range[column, line] != 1) continue;
-                    var panel = _stage[_stageHash[column][line]];
-                    panel.Target(true);
-                    var character = attacker.Owner == Owner.CPU
-                        ? _characterResidue.GetCharacter(panel.GetCharacterId())
-                        : _enemyResidue.GetCharacter(panel.GetCharacterId());
-                    if (character == null) continue;
-                    list.Add(character);
-                }
-            }
-            return list;
+            _targetRegister.SetTargets(targets);
         }
 
+        // キャラクターの移動委処理
         public void MoveCharacter(Character character, IEnumerable<PanelEntity> movePath)
         {
             var panelEntities = movePath.ToList();
+
+            if(!panelEntities.Any()) return;
+            
             foreach (var panel in panelEntities)
             {
                 Invaded(character, panel);
@@ -108,6 +97,12 @@ namespace Arianrhod.UseCase
             }
 
             Invaded(character, panelEntities.Last());
+            _stageModel.ModeEnd(panelEntities.Last());
+        }
+
+        public void Dispose()
+        {
+            _disposable.Dispose();
         }
     }
 }

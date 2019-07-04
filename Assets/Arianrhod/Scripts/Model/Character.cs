@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Arianrhod.Entity;
 using UniRx;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Arianrhod.Model
@@ -15,6 +16,7 @@ namespace Arianrhod.Model
             _d6 = new ReactiveProperty<int>(0);
             _d8 = new ReactiveProperty<int>(0);
             _direction = new ReactiveProperty<Direction>();
+            _damageSubject = new Subject<int>();
         }
 
         private readonly List<SkillEntity> _skillEntity = default;
@@ -23,6 +25,7 @@ namespace Arianrhod.Model
         private readonly ReactiveProperty<int> _d6 = default;
         private readonly ReactiveProperty<int> _d8 = default;
         private readonly ReactiveProperty<Direction> _direction = default;
+        private readonly Subject<int> _damageSubject = default;
         private PanelEntity _position = default;
         private Transform _transform = default;
 
@@ -82,6 +85,12 @@ namespace Arianrhod.Model
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public void EmitDamage(int damage)
+        {
+            _hp.Value = math.max(0, _hp.Value - damage);
+            _damageSubject.OnNext(damage);
         }
 
         public void Dispose()

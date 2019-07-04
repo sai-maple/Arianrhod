@@ -1,18 +1,36 @@
+using System;
+using UniRx;
+
 namespace Arianrhod.Model
 {
     public interface IDamageRegister
     {
-        void SetDamageNum(int damage);
+        void SetDamage(int damage);
+    }
+
+    public interface IDamageProvider
+    {
+        IReadOnlyReactiveProperty<int> OnDamageChanged();
     }
     
-    public class DamageModel
+    public class DamageModel : IDisposable
     {
-
+        private readonly ReactiveProperty<int> _damage = default;
+        public IReadOnlyReactiveProperty<int> OnDamageChanged() => _damage;
         
-
-        public void SetDamageNum(int damage)
+        public DamageModel()
         {
-            
+            _damage = new ReactiveProperty<int>();
+        }
+
+        public void SetDamage(int damage)
+        {
+            _damage.Value = damage;
+        }
+
+        public void Dispose()
+        {
+            _damage.Dispose();
         }
     }
 }

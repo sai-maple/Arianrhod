@@ -13,6 +13,7 @@ namespace Arianrhod.Model
         void NextTurn();
         void SkipMove();
         void SkipAttack();
+        void OnNextPhase();
     }
 
     public class PhaseModel : IPhaseProvider, IPhaseRegister, IDisposable
@@ -33,6 +34,11 @@ namespace Arianrhod.Model
         public void SkipAttack()
         {
             _phase.Value = Phase.End;
+        }
+
+        public void OnNextPhase()
+        {
+            _phase.Value = (Phase)(((int)_phase.Value + 1) % Enum.GetValues(typeof(Phase)).Length);
         }
 
         public void Dispose()

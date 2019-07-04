@@ -14,7 +14,7 @@ namespace Arianrhod.Presenter
     {
         private readonly IDiceFactory _diceFactory = default;
         private readonly IPhaseProvider _phaseProvider = default;
-        private readonly IDamageRegister _damageRegister = default;
+        private readonly IDicePhaseFinalizer _dicePhaseFinalizer = default;
         private readonly ISkillRollDetail _skillRollDetail = default;
         
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
@@ -22,13 +22,13 @@ namespace Arianrhod.Presenter
         public DiceRollPresenter(
             IDiceFactory diceFactory,
             IPhaseProvider phaseProvider,
-            IDamageRegister damageRegister,
+            IDicePhaseFinalizer dicePhaseFinalizer,
             ISkillRollDetail skillRollDetail
         )
         {
             _diceFactory = diceFactory;
             _phaseProvider = phaseProvider;
-            _damageRegister = damageRegister;
+            _dicePhaseFinalizer = dicePhaseFinalizer;
             _skillRollDetail = skillRollDetail;
         }
 
@@ -58,7 +58,7 @@ namespace Arianrhod.Presenter
 
             var damage = await UniTask.WhenAll(tasks.Select(_ => _).ToArray());
             
-            _damageRegister.SetDamageNum(damage.Sum());
+            _dicePhaseFinalizer.SetDamageNum(damage.Sum());
         }
 
         public void Dispose()
