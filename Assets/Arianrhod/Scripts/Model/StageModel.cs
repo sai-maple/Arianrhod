@@ -30,7 +30,7 @@ namespace Arianrhod.Model
         private readonly Subject<PanelEntity> _moveEndPanel = default;
         public IObservable<PanelEntity> OnMoveEvent() => _moveEndPanel.Publish().RefCount();
         
-        public void MakeStage()
+        public void NextStage()
         {
             _stageHash.Clear();
             _stage.Clear();

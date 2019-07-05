@@ -5,7 +5,12 @@ using UniRx;
 
 namespace Arianrhod.Model
 {
-    public class EnemyResidue 
+    public interface IResidueEnemies
+    {
+        IEnumerable<Character> Enemies();
+    }
+    
+    public class ResidueEnemy : IResidueEnemies
     {
         private readonly List<Character> _enemies = default;
         public IEnumerable<Character> Enemies() => _enemies;
@@ -15,8 +20,10 @@ namespace Arianrhod.Model
         public void NextStage()
         {
             _disposable.Dispose();
-            _disposable = _enemies.Select(c => c.OnHpChanged()).Merge()
+            var stream = _enemies.Select(c => c.OnHpChanged()).Merge();
+            _disposable = stream
                 .Where(hp => hp <= 0)
+                .Buffer(stream.Throttle(TimeSpan.FromMilliseconds(100)))
                 .Subscribe(_ => RemoveCharacter());
         }
 

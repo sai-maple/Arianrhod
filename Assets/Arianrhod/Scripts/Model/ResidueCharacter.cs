@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
@@ -5,15 +6,22 @@ using Zenject;
 
 namespace Arianrhod.Model
 {
-    public class CharacterResidue : IInitializable
+    public interface IResidueCharacters
+    {
+        IEnumerable<Character> Characters();
+    }
+    
+    public class ResidueCharacter : IInitializable
     {
         private readonly List<Character> _characters = default;
         public IEnumerable<Character> Characters() => _characters;
 
         public void Initialize()
         {
-            _characters.Select(c => c.OnHpChanged()).Merge()
+            var stream = _characters.Select(c => c.OnHpChanged()).Merge();
+            stream
                 .Where(hp => hp <= 0)
+                .Buffer(stream.Throttle(TimeSpan.FromMilliseconds(100)))
                 .Subscribe(_ => RemoveCharacter());
         }
         

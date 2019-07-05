@@ -13,6 +13,8 @@ namespace Arianrhod.View.Game
         IObservable<PanelEntity> OnPointerDown();
         IObservable<PanelEntity> OnPointerUp();
         void OnSelect(bool isSelect);
+        PanelEntity GetEntity();
+        void OnDespawned();
     }
     
     public class PanelView : MonoBehaviour, IPoolable<PanelEntity, IMemoryPool>,
@@ -35,6 +37,8 @@ namespace Arianrhod.View.Game
         public IObservable<PanelEntity> OnPointerUp() =>
             _trigger.OnPointerUpAsObservable()
                 .Select(_ => _panelEntity);
+
+        public PanelEntity GetEntity() => _panelEntity;
 
         public void OnSelect(bool isSelect)
         {

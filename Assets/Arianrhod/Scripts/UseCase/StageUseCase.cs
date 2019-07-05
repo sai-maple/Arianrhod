@@ -18,8 +18,8 @@ namespace Arianrhod.UseCase
     
     public class StageUseCase : IPanelSelector, IInitializable , IDisposable
     {
-        private readonly CharacterResidue _characterResidue = default;
-        private readonly EnemyResidue _enemyResidue = default;
+        private readonly ResidueCharacter _residueCharacter = default;
+        private readonly ResidueEnemy _residueEnemy = default;
         private readonly IStageModel _stageModel = default;
         private readonly IPhaseProvider _phaseProvider = default;
         private readonly ITargetRegister _targetRegister = default;
@@ -64,8 +64,8 @@ namespace Arianrhod.UseCase
             {
                 return null;
             }
-            var character = _characterResidue.GetCharacter(panel.GetCharacterId());
-            return character ?? _enemyResidue.GetCharacter(panel.GetCharacterId());
+            var character = _residueCharacter.GetCharacter(panel.GetCharacterId());
+            return character ?? _residueEnemy.GetCharacter(panel.GetCharacterId());
         }
 
         // 攻撃範囲の敵キャラクター取得
@@ -75,8 +75,8 @@ namespace Arianrhod.UseCase
 
             var targets = _stageModel.TargetCharacterIds(attacker, skillIndex)
                 .Select(id => attacker.Owner == Owner.CPU
-                    ? _characterResidue.GetCharacter(id)
-                    : _enemyResidue.GetCharacter(id))
+                    ? _residueCharacter.GetCharacter(id)
+                    : _residueEnemy.GetCharacter(id))
                 .Where(character => character != null)
                 .ToList();
 

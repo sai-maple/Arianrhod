@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Arianrhod.Model;
 using UniRx;
 using Zenject;
@@ -17,25 +18,36 @@ namespace Arianrhod.UseCase
         private readonly IDamageProvider _damageProvider = default;
         private readonly ICurrentSkillModel _skillModel = default;
         private readonly IMoveHandler _moveHandler = default;
-        
+        private readonly ITurnCharacterProvider _turnCharacter = default; 
+        private readonly ITargetProvider _targetProvider = default;
+
+        private IDisposable _targets = default;
+
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
         
         public PhaseFinalizeUseCase(
             IPhaseRegister phaseRegister,
             IDamageProvider damageProvider,
             ICurrentSkillModel skillModel,
-            IMoveHandler moveHandler 
+            IMoveHandler moveHandler,
+            ITurnCharacterProvider turnCharacter,
+            ITargetProvider targetProvider
             )
         {
             _phaseRegister = phaseRegister;
             _damageProvider = damageProvider;
             _skillModel = skillModel;
             _moveHandler = moveHandler;
+            _turnCharacter = turnCharacter;
+            _targetProvider = targetProvider;
         }
 
         public void Initialize()
         {
             // StandBy phase to Move phase
+            _turnCharacter.OnTurnCharacterChanged()
+                .Subscribe(_ => _phaseRegister.OnNextPhase())
+                .AddTo(_disposable);
             
             // Move phase to Attack phase
             _moveHandler.OnMoveEvent()
@@ -53,8 +65,16 @@ namespace Arianrhod.UseCase
                 .AddTo(_disposable);
             
             // Damage phase to End phase
-            
-            // on Next Turn
+            _targetProvider.OnTargetCharacters()
+                .Subscribe(targets =>
+                {
+                    _targets.Dispose();
+                    var stream = targets.Select(c => c.OnHpChanged()).Merge();
+                    _targets = stream
+                        .Buffer(stream.Throttle(TimeSpan.FromMilliseconds(100)))
+                        .Subscribe(_ => _phaseRegister.OnNextPhase());
+                })
+                .AddTo(_disposable);
         }
 
         public void SkipMove()

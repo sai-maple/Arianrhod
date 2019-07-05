@@ -6,8 +6,9 @@ namespace Arianrhod.Model
 {
     public class PanelModel : IDisposable
     {
-        public PanelModel()
+        public PanelModel( PanelEntity entity)
         {
+            _entity = entity;
             _isTarget = new ReactiveProperty<bool>(false);
         }
         
@@ -50,7 +51,7 @@ namespace Arianrhod.Model
         {
             _isTarget.Value = isTarget;
         }
-
+        
         public void Dispose()
         {
             _isTarget.Dispose();
