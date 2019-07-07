@@ -9,9 +9,15 @@ namespace Arianrhod.Model
     public interface IResidueCharacters
     {
         IEnumerable<Character> Characters();
+        Character GetCharacter(int id);
+    }
+
+    public interface IResidueCharacterRegister
+    {
+        void AddCharacter(Character character);
     }
     
-    public class ResidueCharacter : IInitializable
+    public class ResidueCharacter : IInitializable , IResidueCharacterRegister
     {
         private readonly List<Character> _characters = default;
         public IEnumerable<Character> Characters() => _characters;

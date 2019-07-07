@@ -15,26 +15,44 @@ namespace Arianrhod.UseCase
         bool Invasive(PanelEntity target);
         Character GetCharacter(PanelEntity target);
     }
+
+    public interface ICharacterMove
+    {
+        void MoveCharacter(IEnumerable<PanelEntity> movePath);
+    }
     
     public class StageUseCase : IPanelSelector, IInitializable , IDisposable
     {
-        private readonly ResidueCharacter _residueCharacter = default;
-        private readonly ResidueEnemy _residueEnemy = default;
+        private readonly IResidueCharacters _residueCharacter = default;
+        private readonly IResidueEnemies _residueEnemy = default;
         private readonly IStageModel _stageModel = default;
         private readonly IPhaseProvider _phaseProvider = default;
         private readonly ITargetRegister _targetRegister = default;
+        private readonly ITurnCharacterProvider _turnCharacter = default;
         
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
-        
-        public StageUseCase()
-        {
 
+        public StageUseCase(
+            IResidueCharacters residueCharacter,
+            IResidueEnemies residueEnemy,
+            IStageModel stageModel,
+            IPhaseProvider phaseProvider,
+            ITargetRegister targetRegister,
+            ITurnCharacterProvider turnCharacter
+        )
+        {
+            _residueCharacter = residueCharacter;
+            _residueEnemy = residueEnemy;
+            _stageModel = stageModel;
+            _phaseProvider = phaseProvider;
+            _targetRegister = targetRegister;
+            _turnCharacter = turnCharacter;
         }
 
         public void Initialize()
         {
             _phaseProvider.OnPhaseChanged()
-                .Where(phase => phase == Phase.Damage)
+                .Where(phase => phase == GamePhase.Damage)
                 .Subscribe(_ => _stageModel.TargetReset())
                 .AddTo(_disposable);
         }
@@ -69,8 +87,10 @@ namespace Arianrhod.UseCase
         }
 
         // 攻撃範囲の敵キャラクター取得
-        public void Target(Character attacker, int skillIndex)
+        public void Target(int skillIndex)
         {
+            var attacker = _turnCharacter.OnTurnCharacterChanged().Value;
+
             _stageModel.TargetReset();
 
             var targets = _stageModel.TargetCharacterIds(attacker, skillIndex)
@@ -84,8 +104,9 @@ namespace Arianrhod.UseCase
         }
 
         // キャラクターの移動委処理
-        public void MoveCharacter(Character character, IEnumerable<PanelEntity> movePath)
+        public void MoveCharacter(IEnumerable<PanelEntity> movePath)
         {
+            var character = _turnCharacter.OnTurnCharacterChanged().Value;
             var panelEntities = movePath.ToList();
 
             if(!panelEntities.Any()) return;

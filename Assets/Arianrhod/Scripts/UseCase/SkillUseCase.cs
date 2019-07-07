@@ -5,6 +5,7 @@ namespace Arianrhod.UseCase
     public interface ISkillSelector
     {
         void SelectSkillIndex(int index);
+        void OnSubmit();
     }
 
     public interface ISkillRollDetail
@@ -27,6 +28,11 @@ namespace Arianrhod.UseCase
         public void SelectSkillIndex(int index)
         {
             _currentSkill.OnSkillSet(_turnCharacter.OnTurnCharacterChanged().Value.Skill(index));
+        }
+
+        public void OnSubmit()
+        {
+            _currentSkill.OnSubmit();
         }
 
         public DiceType GetSkillDiceType()

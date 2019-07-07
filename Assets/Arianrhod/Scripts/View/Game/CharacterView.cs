@@ -21,12 +21,15 @@ namespace Arianrhod.View.Game
         void SetRotation(Direction direction);
     }
     
-    public class CharacterView : MonoBehaviour, ICharacterView
+    public class CharacterView : MonoBehaviour, ICharacterView ,IPoolable<CharacterEntity, IMemoryPool>, IDisposable
     {
         [SerializeField] private Animator _animator = default;
         [SerializeField] private ActionEffectManager _actionEffectManager = default;
 
+        private IMemoryPool _pool = default;
         private CharacterEntity _entity = default;
+
+        private IDisposable _disposable = default;
         
         private static readonly int[] Hash =
         {
@@ -78,6 +81,28 @@ namespace Arianrhod.View.Game
         public void OnDead()
         {
             _animator.SetTrigger(Hash[(int) AnimationState.Death]);
+            _disposable = _actionEffectManager.OnActionEnd()
+                .Subscribe(_ => OnDespawned());
         }
+        
+        public void OnDespawned()
+        {
+            if (_pool == null) return;
+            Dispose();
+        }
+
+        public void OnSpawned(CharacterEntity entity, IMemoryPool pool)
+        {
+            _pool = pool;
+            _entity = entity;
+        }
+
+        public void Dispose()
+        {
+            _disposable.Dispose();
+            _pool.Despawn(this);
+        }
+        
+        public class Factory : PlaceholderFactory<CharacterEntity,CharacterView>{}
     }
 }

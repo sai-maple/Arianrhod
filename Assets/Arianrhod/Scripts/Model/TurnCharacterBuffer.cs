@@ -7,12 +7,17 @@ namespace Arianrhod.Model
 {
     public interface ICharacterBufferInitializer
     {
-        void UpdateCharacters(IEnumerator<Character> characters);
+        void UpdateCharacters(IEnumerable<Character> characters);
     }
 
     public interface ITurnCharacterProvider
     {
         IReadOnlyReactiveProperty<Character> OnTurnCharacterChanged();
+    }
+
+    public interface INextTurn
+    {
+        void OnNextTurn();
     }
 
     public class TurnCharacterBuffer : INextTurn, ICharacterBufferInitializer, ITurnCharacterProvider, IDisposable
@@ -28,7 +33,7 @@ namespace Arianrhod.Model
             _turnCharacter = new ReactiveProperty<Character>();
         }
 
-        public void UpdateCharacters(IEnumerator<Character> characters)
+        public void UpdateCharacters(IEnumerable<Character> characters)
         {
             _turnCharacters.Clear();
             foreach (var character in _turnCharacters.OrderBy(character => character.CharacterEntity.Dexterity))
@@ -37,9 +42,20 @@ namespace Arianrhod.Model
             }
         }
 
-        public void OnNext()
+        public void OnNextTurn()
         {
             var character = _turnCharacters.Dequeue();
+            while (true)
+            {
+                if (character.OnHpChanged().Value <= 0)
+                {
+                    character = _turnCharacters.Dequeue();
+                }
+                else
+                {
+                    break;
+                }
+            }
             _turnCharacters.Enqueue(character);
             _turnCharacter.Value = character;
         }

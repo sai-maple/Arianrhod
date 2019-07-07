@@ -4,7 +4,8 @@ namespace Arianrhod
     {
         NoEntry,
         Empty,
-        Character,
         Dice,
+        Character,
+        Enemy,
     }
 }

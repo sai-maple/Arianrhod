@@ -55,7 +55,7 @@ namespace Arianrhod.UseCase
                 .AddTo(_disposable);
             
             // Attack phase to Dice phase
-            _skillModel.OnSkillChanged()
+            _skillModel.OnSkillSubmit()
                 .Subscribe(_ => _phaseRegister.OnNextPhase())
                 .AddTo(_disposable);
             

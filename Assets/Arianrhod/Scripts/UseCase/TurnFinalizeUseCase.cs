@@ -11,7 +11,7 @@ namespace Arianrhod.UseCase
         void TurnEnd();
     }
     
-    public class TurnFinalizerUseCase : IInitializable, ITurnEnd,IDisposable
+    public class TurnFinalizeUseCase : IInitializable, ITurnEnd,IDisposable
     {
         private readonly IPhaseRegister _phaseRegister = default;
         private readonly IPhaseProvider _phaseProvider = default;
@@ -20,7 +20,7 @@ namespace Arianrhod.UseCase
         
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
 
-        public TurnFinalizerUseCase(
+        public TurnFinalizeUseCase(
             IPhaseRegister phaseRegister,
             IPhaseProvider phaseProvider,
             IResidueCharacters residueCharacters,
@@ -36,16 +36,16 @@ namespace Arianrhod.UseCase
         public void Initialize()
         {
             _phaseProvider.OnPhaseChanged()
-                .Where(phase => phase == Phase.End)
+                .Where(phase => phase == GamePhase.End)
                 .Subscribe(_ =>
                 {
                     if (!_residueCharacters.Characters().Any())
                     {
-                        // game over
+                        _phaseRegister.GameOver();
                     }
                     else if (!_residueEnemies.Enemies().Any())
                     {
-                        // stage clear
+                        _phaseRegister.StageClear();
                     }
                     else
                     {

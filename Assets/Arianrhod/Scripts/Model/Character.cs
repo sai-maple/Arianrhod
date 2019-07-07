@@ -9,7 +9,7 @@ namespace Arianrhod.Model
 {
     public class Character : IDisposable
     {
-        public Character()
+        public Character(int index, CharacterEntity entity)
         {
             _hp = new ReactiveProperty<int>();
             _d3 = new ReactiveProperty<int>(0);
@@ -17,6 +17,7 @@ namespace Arianrhod.Model
             _d8 = new ReactiveProperty<int>(0);
             _direction = new ReactiveProperty<Direction>();
             _damageSubject = new Subject<int>();
+            _position = new ReactiveProperty<Vector3Int>();
         }
 
         private readonly List<SkillEntity> _skillEntity = default;
@@ -26,8 +27,7 @@ namespace Arianrhod.Model
         private readonly ReactiveProperty<int> _d8 = default;
         private readonly ReactiveProperty<Direction> _direction = default;
         private readonly Subject<int> _damageSubject = default;
-        private PanelEntity _position = default;
-        private Transform _transform = default;
+        private readonly ReactiveProperty<Vector3Int> _position = default;
 
         public int Id { get; }
         public int MaxHp { get; }
@@ -41,7 +41,7 @@ namespace Arianrhod.Model
         public Owner Owner { get; } = default;
 
         public SkillEntity Skill(int index) => _skillEntity[index];
-        public (int, int) Position => (_position.X, _position.Y);
+        public IReadOnlyReactiveProperty<Vector3Int> Position() => _position;
 
 
         public void SetDirection(Direction direction)
@@ -67,9 +67,9 @@ namespace Arianrhod.Model
             }
         }
 
-        public void SetPosition(PanelEntity panelEntity)
+        public void SetPosition(int x,int y )
         {
-            _position = panelEntity;
+            _position.Value = new Vector3Int(x, 1, y);
         }
 
         public int DiceNumCount(SkillEntity skillEntity)

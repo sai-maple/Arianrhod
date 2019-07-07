@@ -11,6 +11,7 @@ namespace Arianrhod.Presenter
         private readonly IPanelView _panelView = default;
         private readonly IStageModel _stageModel = default;
         private readonly IPhaseProvider _phaseProvider = default;
+        private readonly IMoveLoadRegister _loadRegister = default;
         private PanelModel _panelModel = default;
         
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
@@ -42,11 +43,14 @@ namespace Arianrhod.Presenter
         private void SetEvents()
         {
             _panelView.OnPointerDown()
-                .Where(_ => _phaseProvider.OnPhaseChanged().Value == Phase.Move)
-                .Subscribe(entity =>
-                {
-                    // use case
-                });
+                .Where(_ => _phaseProvider.OnPhaseChanged().Value == GamePhase.Move)
+                .Subscribe(_loadRegister.EmitFirst)
+                .AddTo(_disposable);
+            
+            _panelView.OnPointerEnter()
+                .Where(_ => _phaseProvider.OnPhaseChanged().Value == GamePhase.Move)
+                .Subscribe(_loadRegister.EmitPanel)
+                .AddTo(_disposable);
         }
 
         public void Dispose()

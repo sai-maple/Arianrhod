@@ -35,7 +35,7 @@ namespace Arianrhod.Presenter
         public void Initialize()
         {
             _phaseProvider.OnPhaseChanged()
-                .Where(phase => phase == Phase.Dice)
+                .Where(phase => phase == GamePhase.Dice)
                 .Subscribe(_ => DiceRoll())
                 .AddTo(_disposable);
         }

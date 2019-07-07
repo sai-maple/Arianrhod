@@ -8,6 +8,7 @@ namespace Arianrhod.Model
     public interface IResidueEnemies
     {
         IEnumerable<Character> Enemies();
+        Character GetCharacter(int id);
     }
     
     public class ResidueEnemy : IResidueEnemies

@@ -33,7 +33,7 @@ namespace Arianrhod.Presenter
         public void Initialize()
         {
             _phaseProvider.OnPhaseChanged()
-                .Where(phase => phase == Phase.Damage)
+                .Where(phase => phase == GamePhase.Damage)
                 .Where(_ => _characterView.GetEntity() == _turnCharacter.OnTurnCharacterChanged().Value.CharacterEntity)
                 .Subscribe(_ =>
                 {

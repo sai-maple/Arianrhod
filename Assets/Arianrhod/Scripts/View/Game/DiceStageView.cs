@@ -15,14 +15,6 @@ namespace Arianrhod.View.Game
         [SerializeField] private ObservableEventTrigger _trigger = default;
 
         private CompositeDisposable _disposable = default;
-        
-        private readonly Vector3[] _path =
-        {
-            new Vector3(0f, 1f, 0f),
-            new Vector3(2f, 0f, 0f),
-            new Vector3(2.5f, 0.5f, 0f),
-            new Vector3(3f, 0f, 0f),
-        };
 
         private async void DeSpawnAnimation()
         {
@@ -53,5 +45,8 @@ namespace Arianrhod.View.Game
             _disposable.Dispose();
             _pool.Despawn(this);
         }
+        
+        public class Factory : PlaceholderFactory<PanelEntity, DiceStageView>{}
+
     }
 }

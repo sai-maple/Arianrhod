@@ -13,20 +13,20 @@ namespace Arianrhod.View.Ui
     
     public class SoundButton : Button
     {
-        [SerializeField] protected SoundEffect _soundEffect = default;
-        protected SignalBus signalBus = default;
+        [SerializeField] private SoundEffect _soundEffect = default;
+        private SignalBus _signalBus = default;
 
         [Inject]
         public void Construct(SignalBus signal)
         {
-            this.signalBus = signal;
+            _signalBus = signal;
         }
 
         public virtual IObservable<Unit> OnClickObservable()
         {
             return this.OnClickAsObservable()
                 .ThrottleFirst(TimeSpan.FromMilliseconds(100))
-                .Do(_ => signalBus.Fire(new SoundSignal(_soundEffect)));
+                .Do(_ => _signalBus.Fire(new SoundSignal(_soundEffect)));
         }
     }
 }
