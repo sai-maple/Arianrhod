@@ -47,7 +47,7 @@ namespace Arianrhod.UseCase
             {
                 foreach (var character in _loadCharacter.LoadCharacters())
                 {
-                    _characterFactory.Create(_id, character);
+                    _characterFactory.Create(_id, character,Owner.Player);
                     _id++;
                 }
 
@@ -58,7 +58,7 @@ namespace Arianrhod.UseCase
 
             foreach (var character in _loadCharacter.LoadEnemies())
             {
-                _characterFactory.Create(_id, character);
+                _characterFactory.Create(_id, character,Owner.CPU);
                 _id++;
             }
 
