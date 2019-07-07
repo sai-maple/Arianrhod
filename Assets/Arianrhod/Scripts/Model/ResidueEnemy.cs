@@ -10,6 +10,11 @@ namespace Arianrhod.Model
         IEnumerable<Character> Enemies();
         Character GetCharacter(int id);
     }
+
+    public interface IResidueEnemyRegister
+    {
+        void AddEnemy(Character enemy);
+    }
     
     public class ResidueEnemy : IResidueEnemies
     {

@@ -5,16 +5,16 @@ namespace Arianrhod
 {
     public interface ICharacterFactory
     {
-        CharacterView Create(CharacterEntity entity);
+        CharacterView Create(int id,CharacterEntity entity);
     }
     
-    public class CharacterFactory
+    public class CharacterFactory : ICharacterFactory
     {
         private readonly CharacterView.Factory _factory = default;
 
-        public CharacterView Create(CharacterEntity entity)
+        public CharacterView Create(int id,CharacterEntity entity)
         {
-            return _factory.Create(entity);
+            return _factory.Create(id,entity);
         }
     }
 }

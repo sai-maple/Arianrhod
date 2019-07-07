@@ -20,7 +20,7 @@ namespace Arianrhod.Model
         void AddCharacter(Character character);
     }
     
-    public class ResidueCharacter : IResidueCharacterRegister
+    public class ResidueCharacter : IResidueCharacters,IResidueCharacterRegister
     {
         private readonly List<Character> _characters = default;
         public IEnumerable<Character> Characters() => _characters;

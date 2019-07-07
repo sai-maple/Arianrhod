@@ -9,7 +9,7 @@ using Zenject;
 
 namespace Arianrhod.UseCase
 {
-    public class StageInitializeUseCase : IInitializable ,IDisposable
+    public class StageInitializeUseCase : IInitializable, IDisposable
     {
         private readonly IPhaseProvider _phaseProvider = default;
         private readonly IPhaseRegister _phaseRegister = default;
@@ -21,11 +21,13 @@ namespace Arianrhod.UseCase
         private readonly IDiceFactory _diceFactory = default;
         private readonly ICharacterFactory _characterFactory = default;
         private readonly IStageInitializer _stageInitializer = default;
-        
+
         private readonly List<DiceStageView> _dice = new List<DiceStageView>();
-        
+
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
-        
+
+        private int _id = 0;
+
         public void Initialize()
         {
             _phaseProvider.OnPhaseChanged()
@@ -40,24 +42,28 @@ namespace Arianrhod.UseCase
             {
                 dice.Dispose();
             }
-            
+
             if (!_residueCharacters.Characters().Any())
             {
                 foreach (var character in _loadCharacter.LoadCharacters())
                 {
-                    _characterFactory.Create(character);
+                    _characterFactory.Create(_id, character);
+                    _id++;
                 }
+
                 await UniTask.WaitWhile(() => _residueCharacters.Characters().Any());
 
                 _residueCharacters.Initialize();
             }
+
             foreach (var character in _loadCharacter.LoadEnemies())
             {
-                _characterFactory.Create(character);
+                _characterFactory.Create(_id, character);
+                _id++;
             }
 
             await UniTask.WaitWhile(() => _residueEnemies.Enemies().Any());
-            
+
             _bufferInitializer.UpdateCharacters(_residueCharacters.Characters().Concat(_residueEnemies.Enemies()));
 
             var stage = _stageInitializer.NextStage(_loadStage.LoadStage(), _residueCharacters.Characters().ToList(),
@@ -67,7 +73,7 @@ namespace Arianrhod.UseCase
             {
                 _dice.Add(_diceFactory.Create(panel.GetEntity()));
             }
-            
+
             _phaseRegister.NextTurn();
         }
 

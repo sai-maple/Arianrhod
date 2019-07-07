@@ -19,9 +19,10 @@ namespace Arianrhod.View.Game
         void DoMove(IEnumerable<Vector3> position);
         CharacterEntity GetEntity();
         void SetRotation(Direction direction);
+        void SetPosition(Vector3Int pos);
     }
     
-    public class CharacterView : MonoBehaviour, ICharacterView ,IPoolable<CharacterEntity, IMemoryPool>, IDisposable
+    public class CharacterView : MonoBehaviour, ICharacterView ,IPoolable<int,Owner,CharacterEntity, IMemoryPool>, IDisposable
     {
         [SerializeField] private Animator _animator = default;
         [SerializeField] private ActionEffectManager _actionEffectManager = default;
@@ -45,6 +46,11 @@ namespace Arianrhod.View.Game
             await transform.DOLocalPath(position.ToArray(), 2f, PathType.Linear)
                 .SetLookAt(1f, Vector3.forward)
                 .SetEase(Ease.Linear);
+        }
+
+        public void SetPosition(Vector3Int pos)
+        {
+            transform.localPosition = pos;
         }
 
         public CharacterEntity GetEntity()
@@ -91,10 +97,12 @@ namespace Arianrhod.View.Game
             Dispose();
         }
 
-        public void OnSpawned(CharacterEntity entity, IMemoryPool pool)
+        public void OnSpawned(int id,Owner owner,CharacterEntity entity, IMemoryPool pool)
         {
             _pool = pool;
             _entity = entity;
+            _entity.Id = id;
+            _entity.Owner = owner;
         }
 
         public void Dispose()
@@ -103,6 +111,6 @@ namespace Arianrhod.View.Game
             _pool.Despawn(this);
         }
         
-        public class Factory : PlaceholderFactory<CharacterEntity,CharacterView>{}
+        public class Factory : PlaceholderFactory<int,Owner,CharacterEntity,CharacterView>{}
     }
 }

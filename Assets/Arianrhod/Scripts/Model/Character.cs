@@ -9,7 +9,7 @@ namespace Arianrhod.Model
 {
     public class Character : IDisposable
     {
-        public Character(int id, CharacterEntity entity, List<SkillEntity> skillEntity)
+        public Character(int id, CharacterEntity entity, List<SkillEntity> skillEntity,Owner owner)
         {
             _hp = new ReactiveProperty<int>(entity.Hp);
             MaxHp = entity.Hp;
@@ -22,6 +22,7 @@ namespace Arianrhod.Model
             Id = id;
             CharacterEntity = entity;
             _skillEntity = skillEntity;
+            Owner = owner;
         }
 
         private readonly List<SkillEntity> _skillEntity = default;

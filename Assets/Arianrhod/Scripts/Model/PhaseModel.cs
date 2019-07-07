@@ -25,6 +25,8 @@ namespace Arianrhod.Model
         private readonly ReactiveProperty<GamePhase> _phase = default;
         public IReadOnlyReactiveProperty<GamePhase> OnPhaseChanged() => _phase;
 
+        private int _stage = 0;
+
         public void NextTurn()
         {
             _phase.Value = GamePhase.Standby;
@@ -47,12 +49,14 @@ namespace Arianrhod.Model
 
         public void GameOver()
         {
+            _stage = 0;
             _phase.Value = GamePhase.GameOver;
         }
 
         public void StageClear()
         {
-            _phase.Value = GamePhase.StageClear;
+            _stage++;
+            _phase.Value = _stage > 5 ? GamePhase.GameClear : GamePhase.StageClear;
         }
 
         public void StartGame()

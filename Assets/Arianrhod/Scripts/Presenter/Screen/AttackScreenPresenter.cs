@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Arianrhod.Model;
 using Arianrhod.UseCase;
 using Arianrhod.View.Ui;
@@ -80,6 +81,7 @@ namespace Arianrhod.Presenter
                 {
                     _index = index;
                     _targetUseCase.Target(_index);
+                    _screen.Initialize(_turnCharacter.OnTurnCharacterChanged().Value.SkillEntities().ToList());
                 })
                 .AddTo(_disposable);
 
