@@ -20,8 +20,14 @@ namespace Arianrhod.UseCase
     {
         void MoveCharacter(IEnumerable<PanelEntity> movePath);
     }
-    
-    public class StageUseCase : IPanelSelector, IInitializable , IDisposable
+
+    public interface ITargetUseCase
+    {
+        void Target(int skillIndex);
+        void SkipAttack();
+    }
+
+    public class StageUseCase : IPanelSelector, ITargetUseCase, ICharacterMove, IInitializable, IDisposable
     {
         private readonly IResidueCharacters _residueCharacter = default;
         private readonly IResidueEnemies _residueEnemy = default;
@@ -29,7 +35,7 @@ namespace Arianrhod.UseCase
         private readonly IPhaseProvider _phaseProvider = default;
         private readonly ITargetRegister _targetRegister = default;
         private readonly ITurnCharacterProvider _turnCharacter = default;
-        
+
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
 
         public StageUseCase(
@@ -59,14 +65,14 @@ namespace Arianrhod.UseCase
 
         private void Invaded(Character character, PanelEntity target)
         {
-            _stageModel.Invaded(character,target);
+            _stageModel.Invaded(character, target);
         }
 
         private void Escaped(PanelEntity target)
         {
             _stageModel.Escaped(target);
         }
-        
+
         // 移動可能判定
         public bool Invasive(PanelEntity target)
         {
@@ -82,6 +88,7 @@ namespace Arianrhod.UseCase
             {
                 return null;
             }
+
             var character = _residueCharacter.GetCharacter(panel.GetCharacterId());
             return character ?? _residueEnemy.GetCharacter(panel.GetCharacterId());
         }
@@ -103,14 +110,19 @@ namespace Arianrhod.UseCase
             _targetRegister.SetTargets(targets);
         }
 
+        public void SkipAttack()
+        {
+            _stageModel.TargetReset();
+        }
+
         // キャラクターの移動委処理
         public void MoveCharacter(IEnumerable<PanelEntity> movePath)
         {
             var character = _turnCharacter.OnTurnCharacterChanged().Value;
             var panelEntities = movePath.ToList();
 
-            if(!panelEntities.Any()) return;
-            
+            if (!panelEntities.Any()) return;
+
             foreach (var panel in panelEntities)
             {
                 Invaded(character, panel);

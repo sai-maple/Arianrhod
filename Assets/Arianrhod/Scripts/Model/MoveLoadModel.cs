@@ -16,6 +16,7 @@ namespace Arianrhod.Model
         void EmitFirst(PanelEntity entity);
         void EmitPanel(PanelEntity entity);
         void OnSubmit();
+        void OnSkip();
         IReadOnlyReactiveCollection<PanelEntity> OnLoadChanged();
     }
 
@@ -52,6 +53,11 @@ namespace Arianrhod.Model
         public void OnSubmit()
         {
             _loadSubject.OnNext(_load);
+        }
+
+        public void OnSkip()
+        {
+            _load.Clear();
         }
 
         public void Dispose()

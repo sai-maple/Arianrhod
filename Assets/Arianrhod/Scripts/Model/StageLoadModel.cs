@@ -8,6 +8,11 @@ namespace Arianrhod.Model
     {
         List<List<int>> LoadStage();
     }
+
+    public interface IStageReset
+    {
+        void Reset();
+    }
     
     public class StageLoadModel : ILoadStage
     {
@@ -17,6 +22,11 @@ namespace Arianrhod.Model
         {
             "","","","","",""
         };
+
+        public void Reset()
+        {
+            _stageIndex = 0;
+        }
 
         public List<List<int>> LoadStage()
         {

@@ -11,8 +11,6 @@ namespace Arianrhod.UseCase
         void SetDamageNum(int damage);
     }
 
-
-
     public class DamageCalculationUseCase : IInitializable, IDicePhaseFinalizer, IDisposable
     {
         private readonly IDamageRegister _damageRegister = default;

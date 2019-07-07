@@ -9,15 +9,19 @@ namespace Arianrhod.Model
 {
     public class Character : IDisposable
     {
-        public Character(int index, CharacterEntity entity)
+        public Character(int id, CharacterEntity entity, List<SkillEntity> skillEntity)
         {
-            _hp = new ReactiveProperty<int>();
+            _hp = new ReactiveProperty<int>(entity.Hp);
+            MaxHp = entity.Hp;
             _d3 = new ReactiveProperty<int>(0);
             _d6 = new ReactiveProperty<int>(0);
             _d8 = new ReactiveProperty<int>(0);
             _direction = new ReactiveProperty<Direction>();
             _damageSubject = new Subject<int>();
             _position = new ReactiveProperty<Vector3Int>();
+            Id = id;
+            CharacterEntity = entity;
+            _skillEntity = skillEntity;
         }
 
         private readonly List<SkillEntity> _skillEntity = default;
@@ -41,6 +45,7 @@ namespace Arianrhod.Model
         public Owner Owner { get; } = default;
 
         public SkillEntity Skill(int index) => _skillEntity[index];
+        public IEnumerable<SkillEntity> SkillEntities() => _skillEntity;
         public IReadOnlyReactiveProperty<Vector3Int> Position() => _position;
 
 

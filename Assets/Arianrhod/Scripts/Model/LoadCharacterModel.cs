@@ -9,6 +9,11 @@ namespace Arianrhod.Model
         List<CharacterEntity> LoadCharacters();
         List<CharacterEntity> LoadEnemies();
     }
+
+    public interface ILoadCharacterReset
+    {
+        void Reset();
+    }
     
     public class LoadCharacterModel : ILoadCharacter
     {
@@ -18,6 +23,11 @@ namespace Arianrhod.Model
         {
             "","","","","",""
         };
+
+        public void Reset()
+        {
+            _stageIndex = 0;
+        }
 
         public List<CharacterEntity> LoadCharacters()
         {

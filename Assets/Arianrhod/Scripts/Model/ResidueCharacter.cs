@@ -10,6 +10,9 @@ namespace Arianrhod.Model
     {
         IEnumerable<Character> Characters();
         Character GetCharacter(int id);
+        void Reset();
+        void Initialize();
+
     }
 
     public interface IResidueCharacterRegister
@@ -17,18 +20,27 @@ namespace Arianrhod.Model
         void AddCharacter(Character character);
     }
     
-    public class ResidueCharacter : IInitializable , IResidueCharacterRegister
+    public class ResidueCharacter : IResidueCharacterRegister
     {
         private readonly List<Character> _characters = default;
         public IEnumerable<Character> Characters() => _characters;
 
+        private IDisposable _disposable = default;
+
+
         public void Initialize()
         {
             var stream = _characters.Select(c => c.OnHpChanged()).Merge();
-            stream
+            _disposable = stream
                 .Where(hp => hp <= 0)
                 .Buffer(stream.Throttle(TimeSpan.FromMilliseconds(100)))
                 .Subscribe(_ => RemoveCharacter());
+        }
+
+        public void Reset()
+        {
+            _characters.Clear();
+            _disposable.Dispose();
         }
         
         public void AddCharacter(Character character)

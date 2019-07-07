@@ -82,6 +82,7 @@ namespace Arianrhod.Presenter
             _screen.OnMoveSkip()
                 .Subscribe(_ =>
                 {
+                    _moveLoadRegister.OnSkip();
                     _phaseRegister.SkipMove();
                     _screen.Close();
                 })

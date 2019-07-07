@@ -13,5 +13,7 @@ namespace Arianrhod
         End,　//　勝敗判定、自行動キャラ取得
         StageClear,
         GameOver,
+        
+        GameClear,
     }
 }

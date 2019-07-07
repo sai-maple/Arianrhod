@@ -47,6 +47,9 @@ namespace Arianrhod.UseCase
                 {
                     _characterFactory.Create(character);
                 }
+                await UniTask.WaitWhile(() => _residueCharacters.Characters().Any());
+
+                _residueCharacters.Initialize();
             }
             foreach (var character in _loadCharacter.LoadEnemies())
             {

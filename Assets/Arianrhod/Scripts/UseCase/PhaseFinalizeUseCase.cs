@@ -31,8 +31,7 @@ namespace Arianrhod.UseCase
             ICurrentSkillModel skillModel,
             IMoveHandler moveHandler,
             ITurnCharacterProvider turnCharacter,
-            ITargetProvider targetProvider
-            )
+            ITargetProvider targetProvider            )
         {
             _phaseRegister = phaseRegister;
             _damageProvider = damageProvider;
