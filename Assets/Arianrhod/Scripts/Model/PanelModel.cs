@@ -50,7 +50,7 @@ namespace Arianrhod.Model
 
         public bool Invasive()
         {
-            return _entity.PanelState != PanelState.Character && _entity.PanelState != PanelState.Enemy && _entity.PanelState != PanelState.NoEntry;
+            return _entity.PanelState != PanelState.Character || _entity.PanelState != PanelState.Enemy || _entity.PanelState != PanelState.NoEntry;
         }
 
         public void Target(bool isTarget)

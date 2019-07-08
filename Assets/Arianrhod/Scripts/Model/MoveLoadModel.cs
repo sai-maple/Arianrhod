@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Arianrhod.Entity;
 using UniRx;
 
@@ -42,7 +43,14 @@ namespace Arianrhod.Model
         {
             if (_load.Contains(entity))
             {
-                _load.Remove(entity);
+                foreach (var load in _load.Reverse())
+                {
+                    if (load == entity)
+                    {
+                        break;
+                    }
+                    _load.Remove(load);
+                }
             }
             else
             {

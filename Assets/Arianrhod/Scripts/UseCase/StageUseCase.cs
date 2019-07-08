@@ -5,6 +5,7 @@ using Arianrhod.Entity;
 using Arianrhod.Model;
 using JetBrains.Annotations;
 using UniRx;
+using UnityEngine;
 using Zenject;
 
 namespace Arianrhod.UseCase
@@ -108,6 +109,19 @@ namespace Arianrhod.UseCase
                 .ToList();
 
             _targetRegister.SetTargets(targets);
+        }
+
+        public IEnumerable<PanelEntity> CPUMove()
+        {
+            var mover = _turnCharacter.OnTurnCharacterChanged().Value;
+            var targets = _stageModel.CPUMoveTarget()
+                .Select(id => _residueCharacter.GetCharacter(id))
+                .Where(character => character != null)
+                .ToList();
+
+            var value = targets.Min(character => Vector3.Distance(character.Position().Value, mover.Position().Value));
+            var target = targets.First(character => Vector3.Distance(character.Position().Value, mover.Position().Value).Equals(value));
+            return _stageModel.AStartLoad(mover, target);
         }
 
         public void SkipAttack()
