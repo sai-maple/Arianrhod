@@ -11,24 +11,20 @@ namespace Arianrhod.UseCase
     {
         private readonly IStageReset _stageReset = default;
         private readonly ILoadCharacterReset _loadCharacter = default;
-        private readonly IResidueCharacters _residueCharacters = default;
 
         public ResetUseCase(
             IStageReset stageReset,
-            ILoadCharacterReset loadCharacter,
-            IResidueCharacters residueCharacters
+            ILoadCharacterReset loadCharacter
         )
         {
             _stageReset = stageReset;
             _loadCharacter = loadCharacter;
-            _residueCharacters = residueCharacters;
         }
 
         public void OnReset()
         {
             _stageReset.Reset();
             _loadCharacter.Reset();
-            _residueCharacters.Reset();
         }
     }
 }

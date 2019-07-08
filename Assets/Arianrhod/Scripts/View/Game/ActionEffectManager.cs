@@ -5,68 +5,65 @@ using UnityEngine;
 
 namespace Arianrhod.View.Game
 {
-	public class ActionEffectManager : MonoBehaviour
+	public class ActionEffectManager:MonoBehaviour
 	{
 		public bool isFar = true;
 		public Vector3 pos;
-		public List<ActionEffect> UltimateEffect = new List<ActionEffect>();
-		public List<ActionEffect> MagicEffect = new List<ActionEffect>();
-		public List<ActionEffect> AttackEffect = new List<ActionEffect>();
-		public List<ActionEffect> Magic2Effect = new List<ActionEffect>();
-	
 		private readonly Subject<Unit> _actionStartSubject = new Subject<Unit>();
 		private readonly Subject<Unit> _actionEndSubject = new Subject<Unit>();
-
 		public IObservable<Unit> OnActionStart() => _actionStartSubject.Publish().RefCount();
 		public IObservable<Unit> OnActionEnd() => _actionEndSubject.Publish().RefCount();
-
-		public List<ActionEffect> getEffectByName(string str)
+		public List<ActionEffect1> UltimateEffect = new List<ActionEffect1>();
+		public List<ActionEffect1> MagicEffect = new List<ActionEffect1>();
+		public List<ActionEffect1> AttackEffect = new List<ActionEffect1>();
+		public List<ActionEffect1> Magic2Effect = new List<ActionEffect1>();
+		public List<ActionEffect1> getEffectByName(string str)
 		{
-			switch (str)
+			switch(str)
 			{
-				case AnimationName.Ultimate:
+				case AnimationName1.Ultimate:
 					return UltimateEffect;
 					break;
-				case AnimationName.Magic:
+				case AnimationName1.Magic:
 					return MagicEffect;
 					break;
-				case AnimationName.Attack:
+				case AnimationName1.Attack:
 					return AttackEffect;
 					break;
-				case AnimationName.Magic2:
+				case AnimationName1.Magic2:
 					return Magic2Effect;
 					break;
 			}
-
 			return null;
 		}
+		
 
 		public void stopUltimateEffect()
 		{
-			for (int i = 0; i < UltimateEffect.Count; i++)
+			for(int i = 0; i < UltimateEffect.Count; i++)
 			{
 				UltimateEffect[i].stop();
 			}
 		}
 
-		private void ActionDone(string actionName)
+		void ActionDone(string actionName)
 		{
 			_actionStartSubject.OnNext(Unit.Default);
+
 		}
 
-		private void ActionStart(string actionName)
+		void ActionStart(string actionName)
 		{
-			List<ActionEffect> list = getEffectByName(actionName);
-			if (list == null)
+			List<ActionEffect1> list = getEffectByName(actionName);
+			if(list == null)
 			{
 				return;
 			}
 
-			for (int i = 0; i < list.Count; i++)
+			for(int i = 0; i < list.Count; i++)
 			{
 				list[i].play();
 			}
-
 			_actionEndSubject.OnNext(Unit.Default);
 		}
 
@@ -77,5 +74,6 @@ namespace Arianrhod.View.Game
 			_actionStartSubject.Dispose();
 			_actionEndSubject.Dispose();
 		}
+   
 	}
 }

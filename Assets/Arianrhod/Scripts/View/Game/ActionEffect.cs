@@ -1,139 +1,134 @@
 ﻿using UnityEngine;
-
-namespace Arianrhod.View.Game
+using System.Collections;
+using System.Collections.Generic;
+using System;
+public class ActionEffect2:MonoBehaviour
 {
-	public class ActionEffect : MonoBehaviour
+	public ParticleSystem[] particles;
+	float oldSpeed = 1f;
+	public float reallyLifeTime = -1;
+	Animator[] animators;
+	TrailRenderer[] renders;
+	void Awake()
 	{
-		public ParticleSystem[] particles;
-		float oldSpeed = 1f;
-		public float reallyLifeTime = -1;
-		Animator[] animators;
-		TrailRenderer[] renders;
+		particles = GetComponentsInChildren<ParticleSystem> ();
+		animators = GetComponentsInChildren<Animator> ();
+		renders = GetComponentsInChildren<TrailRenderer> ();
+	}
 
-		void Awake()
+
+
+	void Start()
+	{
+
+	}
+
+
+	public void reset()
+	{
+		particles = GetComponentsInChildren<ParticleSystem> ();
+
+		for(int i = 0; i < particles.Length; i++)
 		{
-			particles = GetComponentsInChildren<ParticleSystem>();
-			animators = GetComponentsInChildren<Animator>();
-			renders = GetComponentsInChildren<TrailRenderer>();
+			ParticleSystem particle = particles[i];
+            ParticleSystem.MainModule main = particle.main;
+            main.playOnAwake = false;
 		}
-
-
-
-		void Start()
+	}
+	float startTime;
+	void Update()
+	{
+		bool needInActive = true;
+        float nowTime = Time.timeSinceLevelLoad;
+		if(reallyLifeTime > 0)
 		{
-
-		}
-
-
-		public void reset()
-		{
-			particles = GetComponentsInChildren<ParticleSystem>();
-
-			for (int i = 0; i < particles.Length; i++)
+			if(nowTime - startTime < reallyLifeTime)
 			{
-				ParticleSystem particle = particles[i];
-				ParticleSystem.MainModule main = particle.main;
-				main.playOnAwake = false;
+				needInActive = false;
 			}
 		}
-
-		float startTime;
-
-		void Update()
+		else
 		{
-			bool needInActive = true;
-			float nowTime = Time.timeSinceLevelLoad;
-			if (reallyLifeTime > 0)
+			for(int i = 0; i < particles.Length; i++)
 			{
-				if (nowTime - startTime < reallyLifeTime)
+				ParticleSystem particle = particles[i];
+                ParticleSystem.MainModule main = particle.main;
+                if (main.loop == false && main.duration + 3f < nowTime - startTime)
+				{
+					if(!particle.isStopped)
+					{
+						particle.Stop();
+					}
+				}
+				if(!particle.isStopped)
 				{
 					needInActive = false;
 				}
 			}
-			else
-			{
-				for (int i = 0; i < particles.Length; i++)
-				{
-					ParticleSystem particle = particles[i];
-					ParticleSystem.MainModule main = particle.main;
-					if (main.loop == false && main.duration + 3f < nowTime - startTime)
-					{
-						if (!particle.isStopped)
-						{
-							particle.Stop();
-						}
-					}
-
-					if (!particle.isStopped)
-					{
-						needInActive = false;
-					}
-				}
-			}
-
-
-			if (needInActive)
-			{
-				gameObject.SetActive(false);
-			}
-		}
-
-		public void play()
-		{
-			gameObject.SetActive(true);
-			startTime = Time.timeSinceLevelLoad;
-		}
-
-		public void setSpeed(float speed)
-		{
-			for (int i = 0; i < particles.Length; i++)
-			{
-				ParticleSystem particle = particles[i];
-				ParticleSystem.MainModule main = particle.main;
-				main.simulationSpeed = speed;
-			}
-		}
-
-		public void pause()
-		{
-			for (int i = 0; i < particles.Length; i++)
-			{
-				ParticleSystem particle = particles[i];
-				if (particle.isPlaying)
-				{
-					particle.Pause(false);
-				}
-			}
-
-			for (int i = 0; i < animators.Length; i++)
-			{
-				animators[i].speed = 0f;
-			}
-		}
-
-		public void resume()
-		{
-			for (int i = 0; i < particles.Length; i++)
-			{
-				ParticleSystem particle = particles[i];
-				if (particle.isPaused)
-				{
-					particle.Play(false);
-				}
-			}
-
-			for (int i = 0; i < animators.Length; i++)
-			{
-				animators[i].speed = 1f;
-			}
 		}
 
 
-
-		public void stop()
+		if(needInActive)
 		{
 			gameObject.SetActive(false);
 		}
+	}
+
+	public void play()
+	{
+		gameObject.SetActive (true);
+		startTime = Time.timeSinceLevelLoad;
+	}
+
+	public void setSpeed(float speed)
+	{
+		for(int i = 0; i < particles.Length; i++)
+		{
+			ParticleSystem particle = particles[i];
+            ParticleSystem.MainModule main = particle.main;
+            main.simulationSpeed = speed;
+		}
+	}
+
+	public void pause()
+	{
+		for(int i = 0; i < particles.Length; i++)
+		{
+			ParticleSystem particle = particles[i];
+			if(particle.isPlaying)
+			{
+				particle.Pause(false);
+			}
+		}
+
+		for(int i = 0; i < animators.Length; i++)
+		{
+			animators[i].speed = 0f;
+		}
+	}
+	
+	public void resume()
+	{
+		for(int i = 0; i < particles.Length; i++)
+		{
+			ParticleSystem particle = particles[i];
+			if(particle.isPaused)
+			{
+				particle.Play(false);
+			}
+		}
+
+		for(int i = 0; i < animators.Length; i++)
+		{
+			animators[i].speed = 1f;
+		}
+	}
+	
+	
+	
+	public void stop()
+	{
+		gameObject.SetActive (false);
 	}
 }
 

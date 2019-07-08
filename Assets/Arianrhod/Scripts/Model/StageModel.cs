@@ -19,8 +19,8 @@ namespace Arianrhod.Model
 
         void TargetReset();
         IEnumerable<int> TargetCharacterIds(Character attacker, int skillIndex);
-        IEnumerable<int> CPUAttackTargets(Character attacker);
-        IEnumerable<int> CPUMoveTarget();
+        IEnumerable<int> CpuAttackTargets(Character attacker);
+        IEnumerable<int> CpuMoveTarget();
         IEnumerable<PanelEntity> AStartLoad(Character mover, Character target);
         void ModeEnd(PanelEntity panelEntity);
     }
@@ -146,7 +146,7 @@ namespace Arianrhod.Model
             return list;
         }
 
-        public IEnumerable<int> CPUAttackTargets(Character attacker)
+        public IEnumerable<int> CpuAttackTargets(Character attacker)
         {
             var list = new List<int>();
             for (var skillIndex = 0; skillIndex < 3; skillIndex++)
@@ -188,7 +188,7 @@ namespace Arianrhod.Model
             return list;
         }
 
-        public IEnumerable<int> CPUMoveTarget()
+        public IEnumerable<int> CpuMoveTarget()
         {
             var list = new List<int>();
             foreach (var panel in _stage.Values)

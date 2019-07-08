@@ -1,13 +1,18 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Arianrhod.Entity;
 using Arianrhod.Model;
 using Arianrhod.UseCase;
 using Arianrhod.View.Game;
 using UniRx;
+using UniRx.Async;
+using UnityEngine;
 using Zenject;
 
 namespace Arianrhod.Presenter
 {
-    public class CharacterAnimationPresenter : IInitializable,IDisposable
+    public class CharacterPresenter : IInitializable,IDisposable
     {
         private readonly ICharacterView _characterView = default;
         private readonly IPhaseProvider _phaseProvider = default;
@@ -15,20 +20,22 @@ namespace Arianrhod.Presenter
         private readonly ITurnCharacterProvider _turnCharacter = default;
         private readonly IDamagePhaseFinalizer _damagePhaseFinalizer = default;
         private readonly IResidueCharacterRegister _residueCharacter = default;
-        private readonly IResidueEnemyRegister _enemyRegister = default;
+        private readonly IMoveLoadProvider _moveLoadProvider = default;
+        private readonly ICharacterMove _characterMove = default;
 
         private Character _character = default;
 
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
         
-        public CharacterAnimationPresenter(
+        public CharacterPresenter(
             ICharacterView characterView,
             IPhaseProvider phaseProvider,
             ICurrentSkillModel currentSkill,
             ITurnCharacterProvider turnCharacter,
             IDamagePhaseFinalizer damagePhaseFinalizer,
             IResidueCharacterRegister residueCharacter,
-            IResidueEnemyRegister enemyRegister 
+            IMoveLoadProvider moveLoadProvider,
+            ICharacterMove characterMove 
             )
         {
             _characterView = characterView;
@@ -37,21 +44,21 @@ namespace Arianrhod.Presenter
             _turnCharacter = turnCharacter;
             _damagePhaseFinalizer = damagePhaseFinalizer;
             _residueCharacter = residueCharacter;
-            _enemyRegister = enemyRegister;
+            _moveLoadProvider = moveLoadProvider;
+            _characterMove = characterMove;
         }
 
         public void Initialize()
         {
             var entity = _characterView.GetEntity();
             _character = new Character(entity.Id, entity, entity.SkillEntities,entity.Owner);
-            if (entity.Owner == Owner.Player)
-            {
-                _residueCharacter.AddCharacter(_character);
-            }
-            else
-            {
-                _enemyRegister.AddEnemy(_character);
-            }
+            _residueCharacter.AddCharacter(_character);
+
+            
+            _moveLoadProvider.OnLoadSubmit()
+                .Where(_ => _characterView.GetEntity() == _turnCharacter.OnTurnCharacterChanged().Value.CharacterEntity)
+                .Subscribe(OnMove).AddTo(_disposable);
+
 
             _phaseProvider.OnPhaseChanged()
                 .Where(phase => phase == GamePhase.Damage)
@@ -75,6 +82,14 @@ namespace Arianrhod.Presenter
                 .Where(hp => hp <= 0)
                 .Subscribe(_ => _characterView.OnDead())
                 .AddTo(_disposable);
+        }
+        
+        private async void OnMove(IEnumerable<PanelEntity> loadEntities)
+        {
+            var panelEntities = loadEntities.ToList();
+            var load = panelEntities.Select(value => new Vector3(value.X, 1, value.Y));
+            await UniTask.Run(() => _characterView.DoMove(load));
+            _characterMove.MoveCharacter(panelEntities);
         }
 
         public void Dispose()

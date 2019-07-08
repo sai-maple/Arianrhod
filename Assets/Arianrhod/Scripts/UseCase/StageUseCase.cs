@@ -17,6 +17,13 @@ namespace Arianrhod.UseCase
         Character GetCharacter(PanelEntity target);
     }
 
+    public interface ICpuUseCase
+    {
+        IEnumerable<PanelEntity> CpuMove();
+        void MoveCharacter(IEnumerable<PanelEntity> movePath);
+        bool CpuAttack();
+    }
+
     public interface ICharacterMove
     {
         void MoveCharacter(IEnumerable<PanelEntity> movePath);
@@ -28,7 +35,7 @@ namespace Arianrhod.UseCase
         void SkipAttack();
     }
 
-    public class StageUseCase : IPanelSelector, ITargetUseCase, ICharacterMove, IInitializable, IDisposable
+    public class StageUseCase : IPanelSelector, ITargetUseCase, ICharacterMove, ICpuUseCase,IInitializable, IDisposable
     {
         private readonly IResidueCharacters _residueCharacter = default;
         private readonly IResidueEnemies _residueEnemy = default;
@@ -111,10 +118,22 @@ namespace Arianrhod.UseCase
             _targetRegister.SetTargets(targets);
         }
 
-        public IEnumerable<PanelEntity> CPUMove()
+        public bool CpuAttack()
+        {
+            var attacker = _turnCharacter.OnTurnCharacterChanged().Value;
+            var targets = _stageModel.CpuAttackTargets(attacker).Select(id => _residueCharacter.GetCharacter(id)).ToList();
+            if (!targets.Any())
+            {
+                return false;
+            }
+            _targetRegister.SetTargets(targets);
+            return true;
+        } 
+
+        public IEnumerable<PanelEntity> CpuMove()
         {
             var mover = _turnCharacter.OnTurnCharacterChanged().Value;
-            var targets = _stageModel.CPUMoveTarget()
+            var targets = _stageModel.CpuMoveTarget()
                 .Select(id => _residueCharacter.GetCharacter(id))
                 .Where(character => character != null)
                 .ToList();

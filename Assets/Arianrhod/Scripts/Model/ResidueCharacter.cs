@@ -10,7 +10,6 @@ namespace Arianrhod.Model
     {
         IEnumerable<Character> Characters();
         Character GetCharacter(int id);
-        void Reset();
         void Initialize();
 
     }
@@ -27,20 +26,15 @@ namespace Arianrhod.Model
 
         private IDisposable _disposable = default;
 
-
         public void Initialize()
         {
+            _characters.Clear();
+            _disposable.Dispose();
             var stream = _characters.Select(c => c.OnHpChanged()).Merge();
             _disposable = stream
                 .Where(hp => hp <= 0)
                 .Buffer(stream.Throttle(TimeSpan.FromMilliseconds(100)))
                 .Subscribe(_ => RemoveCharacter());
-        }
-
-        public void Reset()
-        {
-            _characters.Clear();
-            _disposable.Dispose();
         }
         
         public void AddCharacter(Character character)

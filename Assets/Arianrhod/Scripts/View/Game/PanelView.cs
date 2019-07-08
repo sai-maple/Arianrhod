@@ -62,5 +62,7 @@ namespace Arianrhod.View.Game
         {
             _pool.Despawn(this);
         }
+        
+        public class Factory : PlaceholderFactory<PanelEntity,PanelView>{}
     }
 }

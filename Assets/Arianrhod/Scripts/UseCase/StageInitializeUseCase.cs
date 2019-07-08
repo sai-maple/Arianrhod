@@ -21,12 +21,42 @@ namespace Arianrhod.UseCase
         private readonly IDiceFactory _diceFactory = default;
         private readonly ICharacterFactory _characterFactory = default;
         private readonly IStageInitializer _stageInitializer = default;
+        private readonly PanelView.Factory _panelFactory = default;
 
         private readonly List<DiceStageView> _dice = new List<DiceStageView>();
+        private readonly List<PanelView> _panel = new List<PanelView>();
+        
+        private readonly List<CharacterView> _characters = new List<CharacterView>();
 
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
 
         private int _id = 0;
+
+        public StageInitializeUseCase(
+            IPhaseProvider phaseProvider,
+            IPhaseRegister phaseRegister,
+            IResidueCharacters residueCharacters,
+            IResidueEnemies residueEnemies,
+            ICharacterBufferInitializer bufferInitializer,
+            ILoadCharacter loadCharacter,
+            ILoadStage loadStage,
+            IDiceFactory diceFactory,
+            ICharacterFactory characterFactory,
+            IStageInitializer stageInitializer,
+            PanelView.Factory panelFactory)
+        {
+            _phaseProvider = phaseProvider;
+            _phaseRegister = phaseRegister;
+            _residueCharacters = residueCharacters;
+            _residueEnemies = residueEnemies;
+            _bufferInitializer = bufferInitializer;
+            _loadCharacter = loadCharacter;
+            _loadStage = loadStage;
+            _diceFactory = diceFactory;
+            _characterFactory = characterFactory;
+            _stageInitializer = stageInitializer;
+            _panelFactory = panelFactory;
+        }
 
         public void Initialize()
         {
@@ -36,33 +66,49 @@ namespace Arianrhod.UseCase
                 .AddTo(_disposable);
         }
 
-        private async void CreateStage()
+        private void Reset()
         {
             foreach (var dice in _dice)
             {
                 dice.Dispose();
             }
-
-            if (!_residueCharacters.Characters().Any())
+            _dice.Clear();
+            
+            foreach (var panel in _panel)
             {
-                foreach (var character in _loadCharacter.LoadCharacters())
-                {
-                    _characterFactory.Create(_id, character,Owner.Player);
-                    _id++;
-                }
-
-                await UniTask.WaitWhile(() => _residueCharacters.Characters().Any());
-
-                _residueCharacters.Initialize();
+                panel.Dispose();
             }
+            _panel.Clear();
+            
+            foreach (var character in _characters)
+            {
+                character.Dispose();
+            }
+            _characters.Clear();
+        }
+
+        private async void CreateStage()
+        {
+            Reset();
+
+            foreach (var character in _loadCharacter.LoadCharacters())
+            {
+                _characters.Add(_characterFactory.Create(_id, character,Owner.Player));
+                _id++;
+            }
+
+            await UniTask.WaitWhile(() => _residueCharacters.Characters().Any());
+
+            _residueCharacters.Initialize();
 
             foreach (var character in _loadCharacter.LoadEnemies())
             {
-                _characterFactory.Create(_id, character,Owner.CPU);
+                _characters.Add(_characterFactory.Create(_id, character,Owner.CPU));
                 _id++;
             }
 
             await UniTask.WaitWhile(() => _residueEnemies.Enemies().Any());
+            _residueEnemies.Initialize();
 
             _bufferInitializer.UpdateCharacters(_residueCharacters.Characters().Concat(_residueEnemies.Enemies()));
 
@@ -72,6 +118,9 @@ namespace Arianrhod.UseCase
             foreach (var panel in stage)
             {
                 _dice.Add(_diceFactory.Create(panel.GetEntity()));
+                var entity = panel.GetEntity();
+                if(entity.PanelState == PanelState.NoEntry) continue;
+                _panel.Add(_panelFactory.Create(entity));
             }
 
             _phaseRegister.NextTurn();

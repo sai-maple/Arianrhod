@@ -9,6 +9,7 @@ namespace Arianrhod.Model
     {
         IEnumerable<Character> Enemies();
         Character GetCharacter(int id);
+        void Initialize();
     }
 
     public interface IResidueEnemyRegister
@@ -16,14 +17,14 @@ namespace Arianrhod.Model
         void AddEnemy(Character enemy);
     }
     
-    public class ResidueEnemy : IResidueEnemies
+    public class ResidueEnemy : IResidueEnemies,IResidueEnemyRegister
     {
         private readonly List<Character> _enemies = default;
         public IEnumerable<Character> Enemies() => _enemies;
 
         private IDisposable _disposable = default;
 
-        public void NextStage()
+        public void Initialize()
         {
             _disposable.Dispose();
             var stream = _enemies.Select(c => c.OnHpChanged()).Merge();
