@@ -18,6 +18,7 @@ namespace Arianrhod.Model
         void GameOver();
         void StageClear();
         void StartGame();
+        void ReturnTitle();
     }
 
     public class PhaseModel : IPhaseProvider, IPhaseRegister, IDisposable
@@ -62,6 +63,11 @@ namespace Arianrhod.Model
         public void StartGame()
         {
             _phase.Value = GamePhase.StageInitialize;
+        }
+
+        public void ReturnTitle()
+        {
+            _phase.Value = GamePhase.OutGame;
         }
 
         public void Dispose()
