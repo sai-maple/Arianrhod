@@ -25,7 +25,7 @@ namespace Arianrhod.Presenter
         private readonly ICharacterMove _characterMove = default;
         private readonly ICpuUseCase _cpuUseCase = default;
         
-        private Character _character = default;
+        private readonly Character _character = default;
 
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
         
@@ -40,7 +40,8 @@ namespace Arianrhod.Presenter
             IResidueEnemyRegister enemyRegister ,
             IMoveLoadProvider moveLoadProvider,
             ICharacterMove characterMove ,
-            ICpuUseCase cpuUseCase
+            ICpuUseCase cpuUseCase,
+            Character character 
         )
         {
             _characterView = characterView;
@@ -53,12 +54,13 @@ namespace Arianrhod.Presenter
             _moveLoadProvider = moveLoadProvider;
             _characterMove = characterMove;
             _cpuUseCase = cpuUseCase;
+            _character = character;
         }
         
         public void Initialize()
         {
             var entity = _characterView.GetEntity();
-            _character = new Character(entity.Id, entity, entity.SkillEntities,entity.Owner);
+            _character.Initialize(entity.Id, entity, entity.SkillEntities, entity.Owner);
             _enemyRegister.AddEnemy(_character);
             
             // 移動アニメーション

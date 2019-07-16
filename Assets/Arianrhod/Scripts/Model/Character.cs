@@ -9,7 +9,7 @@ namespace Arianrhod.Model
 {
     public class Character : IDisposable
     {
-        public Character(int id, CharacterEntity entity, List<SkillEntity> skillEntity,Owner owner)
+        public void Initialize(int id, CharacterEntity entity, List<SkillEntity> skillEntity,Owner owner)
         {
             _hp = new ReactiveProperty<int>(entity.Hp);
             MaxHp = entity.Hp;
@@ -25,25 +25,25 @@ namespace Arianrhod.Model
             Owner = owner;
         }
 
-        private readonly List<SkillEntity> _skillEntity = default;
-        private readonly ReactiveProperty<int> _hp = default;
-        private readonly ReactiveProperty<int> _d3 = default;
-        private readonly ReactiveProperty<int> _d6 = default;
-        private readonly ReactiveProperty<int> _d8 = default;
-        private readonly ReactiveProperty<Direction> _direction = default;
-        private readonly Subject<int> _damageSubject = default;
-        private readonly ReactiveProperty<Vector3Int> _position = default;
+        private  List<SkillEntity> _skillEntity = default;
+        private  ReactiveProperty<int> _hp = default;
+        private  ReactiveProperty<int> _d3 = default;
+        private  ReactiveProperty<int> _d6 = default;
+        private  ReactiveProperty<int> _d8 = default;
+        private  ReactiveProperty<Direction> _direction = default;
+        private  Subject<int> _damageSubject = default;
+        private  ReactiveProperty<Vector3Int> _position = default;
 
-        public int Id { get; }
-        public int MaxHp { get; }
+        public int Id { get; private set; }
+        public int MaxHp { get; private set; }
         public IReadOnlyReactiveProperty<int> OnHpChanged() => _hp;
         public IReadOnlyReactiveProperty<int> OnD3Changed() => _d3;
         public IReadOnlyReactiveProperty<int> OnD6Changed() => _d6;
         public IReadOnlyReactiveProperty<int> OnD8Changed() => _d8;
         public IReadOnlyReactiveProperty<Direction> OnDirectionChanged() => _direction;
         
-        public CharacterEntity CharacterEntity { get; } = default;
-        public Owner Owner { get; } = default;
+        public CharacterEntity CharacterEntity { get; private set; } = default;
+        public Owner Owner { get; private set;} = default;
 
         public SkillEntity Skill(int index) => _skillEntity[index];
         public IEnumerable<SkillEntity> SkillEntities() => _skillEntity;

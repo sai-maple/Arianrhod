@@ -23,7 +23,7 @@ namespace Arianrhod.Presenter
         private readonly IMoveLoadProvider _moveLoadProvider = default;
         private readonly ICharacterMove _characterMove = default;
 
-        private Character _character = default;
+        private readonly Character _character = default;
 
         private readonly CompositeDisposable _disposable = new CompositeDisposable();
         
@@ -35,7 +35,8 @@ namespace Arianrhod.Presenter
             IDamagePhaseFinalizer damagePhaseFinalizer,
             IResidueCharacterRegister residueCharacter,
             IMoveLoadProvider moveLoadProvider,
-            ICharacterMove characterMove 
+            ICharacterMove characterMove,
+            Character character
             )
         {
             _characterView = characterView;
@@ -46,12 +47,14 @@ namespace Arianrhod.Presenter
             _residueCharacter = residueCharacter;
             _moveLoadProvider = moveLoadProvider;
             _characterMove = characterMove;
+            _character = character;
+
         }
 
         public void Initialize()
         {
             var entity = _characterView.GetEntity();
-            _character = new Character(entity.Id, entity, entity.SkillEntities,entity.Owner);
+            _character.Initialize(entity.Id, entity, entity.SkillEntities,entity.Owner);
             _residueCharacter.AddCharacter(_character);
 
             
