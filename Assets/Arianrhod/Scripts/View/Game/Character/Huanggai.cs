@@ -31,11 +31,10 @@ namespace Arianrhod.View.Game.Character
                 bullet.effectObj = _damageEffect4;
                 if (_damageEffect2 == null) continue;
                 var effect = Instantiate(_damageEffect2);
-                effect.transform.position = MathUtil1.findChild(_target, "attackedPivot").position;
+                effect.transform.position = MathUtil.findChild(_target, "attackedPivot").position;
                 effect.play();
             }
         }
-
 
         private async void DelayBullet2()
         {
@@ -52,7 +51,7 @@ namespace Arianrhod.View.Game.Character
                 bullet.effectObj = _damageEffect4;
                 if (_damageEffect2 == null) continue;
                 var effect = Instantiate(_damageEffect2);
-                effect.transform.position = MathUtil1.findChild(_target, "attackedPivot").position;
+                effect.transform.position = MathUtil.findChild(_target, "attackedPivot").position;
                 effect.play();
             }
         }
@@ -73,7 +72,7 @@ namespace Arianrhod.View.Game.Character
                 bullet.effectObj = _damageEffect4;
                 if (_damageEffect2 == null) continue;
                 var effect = Instantiate(_damageEffect2);
-                effect.transform.position = MathUtil1.findChild(_target, "attackedPivot").position;
+                effect.transform.position = MathUtil.findChild(_target, "attackedPivot").position;
                 effect.play();
             }
         }
@@ -127,7 +126,7 @@ namespace Arianrhod.View.Game.Character
 
                     if (_damageEffect2 != null)
                     {
-                        var effect = GameObject.Instantiate(_damageEffect2);
+                        var effect = Instantiate(_damageEffect2);
 
                         effect.transform.position = _target.position;
                         effect.play();
@@ -138,7 +137,7 @@ namespace Arianrhod.View.Game.Character
                 case AnimationName.Ultimate:
                     if (_ultimateBullet != null)
                     {
-                        var bullet = GameObject.Instantiate(_ultimateBullet);
+                        var bullet = Instantiate(_ultimateBullet);
                         bullet.player = transform;
                         bullet.target = _target;
                         bullet.effectObj = _damageEffect3;
@@ -149,7 +148,7 @@ namespace Arianrhod.View.Game.Character
                     {
                         var effect = Instantiate(_damageEffect3);
 
-                        effect.transform.position = GameObject.Find("bigzhangjiao (1)").transform.position;
+                        effect.transform.position =_target.position;
                         effect.play();
                     }
 

@@ -25,14 +25,14 @@ namespace Arianrhod.View.Game.Character
                 var transform1 = transform;
                 bullet.player = transform1;
                 bullet.startPos = transform1.position + new Vector3(0f, 0.01f, 0f);
-                bullet.tarPos = MathUtil1.calcTargetPosByRotation(transform1, angle + i * 18f, 10f);
+                bullet.tarPos = MathUtil.calcTargetPosByRotation(transform1, angle + i * 18f, 10f);
                 bullet.effectObj = _damageEffect1;
                 bullet.bulleting();
                 await UniTask.Delay(1);
                 if (i % 6 != 0) continue;
                 if (_damageEffect2 == null) continue;
                 var effect = Instantiate(_damageEffect2);
-                effect.transform.position = MathUtil1.findChild(_target, "attackedPivot").position;
+                effect.transform.position = MathUtil.findChild(_target, "attackedPivot").position;
                 effect.play();
             }
         }
@@ -47,7 +47,7 @@ namespace Arianrhod.View.Game.Character
                     if (_damageEffect1 != null)
                     {
                         var effect = Instantiate(_damageEffect1);
-                        effect.transform.position = MathUtil1.findChild(_target, "attackedPivot").position;
+                        effect.transform.position = MathUtil.findChild(_target, "attackedPivot").position;
                         effect.play();
                     }
                     break;
@@ -55,7 +55,7 @@ namespace Arianrhod.View.Game.Character
                     if (_damageEffect2 != null)
                     {
                         var effect = Instantiate(_damageEffect2);
-                        effect.transform.position = MathUtil1.findChild(_target, "attackedPivot").position;
+                        effect.transform.position = MathUtil.findChild(_target, "attackedPivot").position;
                         effect.play();
                     }
 
@@ -77,7 +77,7 @@ namespace Arianrhod.View.Game.Character
                     if (_damageEffect2 != null)
                     {
                         var effect = Instantiate(_damageEffect2);
-                        effect.transform.position = MathUtil1.findChild(_target, "attackedPivot").position;
+                        effect.transform.position = MathUtil.findChild(_target, "attackedPivot").position;
                         effect.play();
                     }
                     break;
@@ -85,7 +85,7 @@ namespace Arianrhod.View.Game.Character
                     if (_damageEffect3 != null)
                     {
                         var effect = Instantiate(_damageEffect3);
-                        effect.transform.position = MathUtil1.findChild(_target, "attackedPivot").position;
+                        effect.transform.position = MathUtil.findChild(_target, "attackedPivot").position;
                         effect.play();
                     }
                     break;
