@@ -15,12 +15,6 @@ namespace Arianrhod.View.Game.Character
         [SerializeField] private ParticlesEffect _damageEffect2 = default;
         [SerializeField] private ParticlesEffect _damageEffect3 = default;
 
-
-        private async void DelayBullet()
-        {
-            await UniTask.Delay(2000);
-        }
-
         private async void DelayBullet1()
         {
             const int count = 5;
@@ -106,7 +100,6 @@ namespace Arianrhod.View.Game.Character
                         effect.play();
                     }
                     DelayBullet3();
-                    DelayBullet();
                     break;
             }
         }
