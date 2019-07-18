@@ -111,6 +111,12 @@ namespace Arianrhod.View.Game
             _pool.Despawn(this);
         }
         
-        public class Factory : PlaceholderFactory<int,Owner,CharacterEntity,CharacterView>{}
+        public class Guanyu : PlaceholderFactory<int,Owner,CharacterEntity,CharacterView>{}
+        public class Huanggai : PlaceholderFactory<int,Owner,CharacterEntity,CharacterView>{}
+        public class Huanyueing : PlaceholderFactory<int,Owner,CharacterEntity,CharacterView>{}
+        public class Lusu : PlaceholderFactory<int,Owner,CharacterEntity,CharacterView>{}
+        public class Simayi : PlaceholderFactory<int,Owner,CharacterEntity,CharacterView>{}
+        public class Zhugeliang : PlaceholderFactory<int,Owner,CharacterEntity,CharacterView>{}
+
     }
 }

@@ -49,7 +49,13 @@ namespace Arianrhod.View.Game
             _pool.Despawn(this);
         }
 
-        public class Factory : PlaceholderFactory<int, DiceRollView>
+        public class D3 : PlaceholderFactory<int, DiceRollView>
+        {
+        }
+        public class D6 : PlaceholderFactory<int, DiceRollView>
+        {
+        }
+        public class D8 : PlaceholderFactory<int, DiceRollView>
         {
         }
     }
