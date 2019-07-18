@@ -82,6 +82,7 @@ namespace Arianrhod.Presenter
                 .Subscribe(_characterView.SetPosition)
                 .AddTo(_disposable);
             _character.OnHpChanged()
+                .Do(_ =>  _characterView.OnAnimation(AnimationState.Attacked))
                 .Where(hp => hp <= 0)
                 .Subscribe(_ => _characterView.OnDead())
                 .AddTo(_disposable);

@@ -31,21 +31,17 @@ namespace Arianrhod.View.Game
         private CharacterEntity _entity = default;
 
         private IDisposable _disposable = default;
-        
-        private static readonly int[] Hash =
-        {
-            Animator.StringToHash("Stand"),
-            Animator.StringToHash("Death")
-        };
 
         public IObservable<Unit> OnAnimationStarted() => _actionEffectManager.OnActionStart();
         public IObservable<Unit> OnAnimationEnded() => _actionEffectManager.OnActionEnd();
 
         public async void DoMove(IEnumerable<Vector3> position)
         {
+            _animator.SetTrigger(AnimationState.Run.ToString());
             await transform.DOLocalPath(position.ToArray(), 2f, PathType.Linear)
                 .SetLookAt(1f, Vector3.forward)
-                .SetEase(Ease.Linear);
+                .SetEase(Ease.Linear)
+                .OnComplete(() => _animator.SetTrigger(AnimationState.Ideal.ToString()));
         }
 
         public void SetPosition(Vector3Int pos)
@@ -81,12 +77,12 @@ namespace Arianrhod.View.Game
 
         public void OnAnimation(AnimationState state)
         {
-            _animator.SetTrigger(Hash[(int) state]);
+            _animator.SetTrigger(state.ToString());
         }
 
         public void OnDead()
         {
-            _animator.SetTrigger(Hash[(int) AnimationState.Death]);
+            _animator.SetTrigger(AnimationState.Death.ToString());
             _disposable = _actionEffectManager.OnActionEnd()
                 .Subscribe(_ => OnDespawned());
         }
