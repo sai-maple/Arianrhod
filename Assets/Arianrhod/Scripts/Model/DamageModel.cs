@@ -13,7 +13,7 @@ namespace Arianrhod.Model
         IReadOnlyReactiveProperty<int> OnDamageChanged();
     }
     
-    public class DamageModel : IDisposable
+    public class DamageModel : IDamageRegister,IDisposable
     {
         private readonly ReactiveProperty<int> _damage = default;
         public IReadOnlyReactiveProperty<int> OnDamageChanged() => _damage;

@@ -6,8 +6,8 @@ namespace Arianrhod.Model
 {
     public interface ILoadCharacter
     {
-        List<CharacterEntity> LoadCharacters();
-        List<CharacterEntity> LoadEnemies();
+        IEnumerable<CharacterEntity> LoadCharacters();
+        IEnumerable<CharacterEntity> LoadEnemies();
     }
 
     public interface ILoadCharacterReset
@@ -29,14 +29,14 @@ namespace Arianrhod.Model
             _stageIndex = 0;
         }
 
-        public List<CharacterEntity> LoadCharacters()
+        public IEnumerable<CharacterEntity> LoadCharacters()
         {
             var stage = Resources.Load(_stageHush[0]) as TextAsset;
             Debug.Assert(stage != null, nameof(stage) + " != null");
             return JsonUtility.FromJson<List<CharacterEntity>>(stage.text);
         }
         
-        public List<CharacterEntity> LoadEnemies()
+        public IEnumerable<CharacterEntity> LoadEnemies()
         {
             _stageIndex++;
             var stage = Resources.Load(_stageHush[_stageIndex]) as TextAsset;

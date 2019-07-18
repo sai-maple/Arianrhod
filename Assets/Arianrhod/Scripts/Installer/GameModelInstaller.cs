@@ -25,6 +25,12 @@ namespace Arianrhod.Installer
                 .AsCached();
             Container.BindInterfacesTo<TurnCharacterBuffer>()
                 .AsCached();
+            Container.BindInterfacesTo<LoadCharacterModel>()
+                .AsCached();
+            Container.BindInterfacesTo<DamageModel>()
+                .AsCached();
+            Container.BindInterfacesTo<CurrentSkillModel>()
+                .AsCached();
         }
     }
 }
