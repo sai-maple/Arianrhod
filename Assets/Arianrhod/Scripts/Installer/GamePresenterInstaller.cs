@@ -8,9 +8,9 @@ namespace Arianrhod.Installer
         public override void InstallBindings()
         {
             Container.BindInterfacesTo<StandByInitializer>()
-                .AsCached();
+                .AsCached().NonLazy();
             Container.BindInterfacesTo<DiceRollPresenter>()
-                .AsCached();
+                .AsCached().NonLazy();
         }
     }
 }

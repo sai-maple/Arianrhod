@@ -8,9 +8,9 @@ namespace Arianrhod.Installer
         public override void InstallBindings()
         {
             Container.BindInterfacesTo<PanelPresenter>()
-                .AsCached();
+                .AsCached().NonLazy();
             Container.BindInterfacesTo<MovePanelPresenter>()
-                .AsCached();
+                .AsCached().NonLazy();
         }
     }
 }

@@ -9,11 +9,11 @@ namespace Arianrhod.Installer
         public override void InstallBindings()
         {
             Container.BindInterfacesTo<CharacterPresenter>()
-                .AsCached();
+                .AsCached().NonLazy();
             Container.BindInterfacesAndSelfTo<Character>()
                 .AsCached();
             Container.BindInterfacesTo<CharacterMovePresenter>()
-                .AsCached();
+                .AsCached().NonLazy();
         }
     }
 }

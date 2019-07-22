@@ -9,7 +9,7 @@ namespace Arianrhod.Installer
         public override void InstallBindings()
         {
             Container.BindInterfacesTo<CpuCharacterPresenter>()
-                .AsCached();
+                .AsCached().NonLazy();
             Container.BindInterfacesAndSelfTo<Character>()
                 .AsCached();
 

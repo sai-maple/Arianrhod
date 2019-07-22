@@ -3,11 +3,11 @@ using Zenject;
 
 namespace Arianrhod.Installer
 {
-    public class CameraInstaller : MonoInstaller<CameraInstaller>
+    public class ArrowInstaller : MonoInstaller<ArrowInstaller>
     {
         public override void InstallBindings()
         {
-            Container.BindInterfacesTo<CameraPresenter>()
+            Container.BindInterfacesTo<ArrowPresenter>()
                 .AsCached().NonLazy();
         }
     }
