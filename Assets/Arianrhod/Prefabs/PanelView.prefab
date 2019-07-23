@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5817272878670716382}
   - component: {fileID: 2533121879950944361}
   m_Layer: 0
-  m_Name: SelectView
+  m_Name: PanelView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 2696057999976289273}
   - component: {fileID: 8777763064074445096}
   m_Layer: 0
-  m_Name: Quad
+  m_Name: SelectView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
