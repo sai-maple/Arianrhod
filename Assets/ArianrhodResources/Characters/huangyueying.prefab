@@ -3061,6 +3061,7 @@ GameObject:
   - component: {fileID: 9500000}
   - component: {fileID: 11400012}
   - component: {fileID: 7980146840118938358}
+  - component: {fileID: 3248968046065300451}
   m_Layer: 0
   m_Name: huangyueying
   m_TagString: Untagged
@@ -3162,6 +3163,20 @@ MonoBehaviour:
     type: 3}
   _damageEffect3: {fileID: -612687433198777669, guid: 9f19374ce93d2544e92c753db9c243f1,
     type: 3}
+--- !u!114 &3248968046065300451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 652456e156a84e68b513b16e0139dbbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 9500000}
+  _actionEffectManager: {fileID: 11400012}
 --- !u!1 &100188
 GameObject:
   m_ObjectHideFlags: 0
